@@ -1,25 +1,25 @@
 ## 🛠️ About Zappmint
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-zappmint.netlify.app-brightgreen?style=for-the-badge)](https://zappmint.netlify.app/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-zappmint-0g.netlify.app-brightgreen?style=for-the-badge)](https://zappmint-0g.netlify.app/)
 
 **Zappmint** is a **vibe coding platform** that transforms prompts into functional mini-apps—called **Zapps**—instantly. It's built for creators, hackers, and anyone who wants to ship fun, experimental apps with zero code.
 
 But Zappmint isn't just about building—it's about owning.
 
-Each Zapp you create is **minted as a Zora Coin**—a unique ERC-20 token using the [Zora Coins SDK](https://docs.zora.co/coins). These **AppCoins** power access, funding, and monetization from the moment your app goes live.
+Each Zapp you create is **minted as an AppCoin**—a unique ERC-20 token deployed on the 0G Network. These **AppCoins** power access, funding, and monetization from the moment your app goes live.
 
-🚀 **Now powered by 0G Network!** Zappmint runs on the 0G-Galileo-Testnet, providing fast, efficient blockchain infrastructure for your Zapps.
+🚀 **Powered by 0G Network!** Zappmint runs on the 0G-Galileo-Testnet, providing fast, efficient blockchain infrastructure and decentralized storage for your Zapps.
 
 > 🧱 [Check code implementation](<https://github.com/Ayushjain2205/zappmint-coinathon/blob/main/app/(main)/chats/%5Bid%5D/code-viewer.tsx#L191>)
 
-[🌀 Live Demo](https://zappmint.netlify.app)
+[🌀 Live Demo](https://zappmint-0g.netlify.app)
 
 ---
 
 ### ✨ Key Features
 
 - ⚡ **Prompt-to-App Flow**: Create working apps from natural language.
-- 🪙 **AppCoins = Zora Coins**: Every Zapp is minted as a token with real utility.
+- 🪙 **AppCoins**: Every Zapp is minted as a token with real utility on the 0G Network.
 - 🔐 **Token Gating**: Use AppCoins to control access to features or content.
 - 💸 **Built-in Monetization**: Crowdfund features, reward users, or launch limited access modes.
 - 🔁 **Remixable Zapps**: Anyone can fork and build on top of existing Zapps.
@@ -28,7 +28,7 @@ Each Zapp you create is **minted as a Zora Coin**—a unique ERC-20 token using 
 
 ### 💡 Why Zappmint?
 
-While other no-code tools help you build, **Zappmint helps you build and own**. AppCoins (minted as Zora Coins) create sustainable, community-powered micro-app ecosystems where:
+While other no-code tools help you build, **Zappmint helps you build and own**. AppCoins (minted on the 0G Network) create sustainable, community-powered micro-app ecosystems where:
 
 - Users fund what they want to see
 - Creators earn from what they build
@@ -36,9 +36,9 @@ While other no-code tools help you build, **Zappmint helps you build and own**. 
 
 ---
 
-### 🔗 Powered by Zora Coins & 0G Network
+### 🔗 Powered by 0G Network
 
-We use the [Zora Coins SDK](https://docs.zora.co/coins/sdk) to mint ERC-20 tokens on the 0G-Galileo-Testnet for each app. This enables seamless, cost-effective token creation that feels native to the Zapp creation flow.
+We mint ERC-20 tokens directly on the 0G-Galileo-Testnet for each app, leveraging 0G's fast blockchain infrastructure and decentralized storage. This enables seamless, cost-effective token creation that feels native to the Zapp creation flow.
 
 **Network Details:**
 
