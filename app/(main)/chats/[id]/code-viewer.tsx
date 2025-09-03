@@ -235,7 +235,7 @@ export default function CodeViewer({
       const trimmedAddress = getAddress.trim();
       const response = await getCoin({
         address: trimmedAddress,
-        chain: baseSepolia.id,
+        chain: ogGalileo.id,
       });
       if (!response.data?.zora20Token)
         throw new Error("Coin not found or invalid address.");
