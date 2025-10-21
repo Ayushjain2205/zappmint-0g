@@ -4,6 +4,7 @@
 import Fieldset from "@/components/fieldset";
 import ArrowRightIcon from "@/components/icons/arrow-right";
 import LightningBoltIcon from "@/components/icons/lightning-bolt";
+import LightbulbIcon from "@/components/icons/lightbulb";
 import LoadingButton from "@/components/loading-button";
 import Spinner from "@/components/spinner";
 import bgImg from "@/public/halo.png";
@@ -452,7 +453,24 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <div className="relative z-20 flex shrink-0 has-[:disabled]:opacity-50">
+                <div className="relative z-20 flex shrink-0 items-center gap-3 has-[:disabled]:opacity-50">
+                  <div className="group relative">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // TODO: Implement enhance prompt functionality
+                        console.log("Enhance prompt clicked");
+                      }}
+                      className="flex size-8 items-center justify-center rounded bg-transparent p-1 font-display text-sm text-gray-400 hover:bg-zinc-900/10 hover:text-gray-700 focus-visible:outline-none"
+                      disabled={isStarting}
+                    >
+                      <LightbulbIcon className="size-4" />
+                    </button>
+                    <div className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      Enhance prompt
+                      <div className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
                   <button
                     type="submit"
                     className="flex items-center gap-3 rounded-2xl border-2 border-plumPurple bg-bubblegumPink px-8 py-4 font-heading text-xl font-bold text-plumPurple shadow-lg transition-all duration-200 hover:bg-lemonYellow hover:shadow-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lemonYellow"
