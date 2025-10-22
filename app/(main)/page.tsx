@@ -139,7 +139,13 @@ export default function Home() {
               <span className="font-heading text-plumPurple">mint</span>
             </span>
           </div>
-          <div>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/zapps"
+              className="rounded-lg bg-bubblegumPink px-4 py-2 font-heading text-sm font-medium text-plumPurple transition-colors hover:bg-lemonYellow"
+            >
+              Explore
+            </Link>
             <ConnectButton />
           </div>
         </div>
