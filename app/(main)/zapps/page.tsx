@@ -6,7 +6,8 @@ import { ZappCard, ZappIcons } from "@/components/ZappCard";
 import { useEffect, useState } from "react";
 import { getAllChats } from "../actions";
 import Image from "next/image";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton } from "thirdweb/react";
+import { client } from "@/lib/client";
 import Link from "next/link";
 
 // Add type for Chat
@@ -68,7 +69,7 @@ export default function ZappsPage() {
             >
               Home
             </Link>
-            <ConnectButton />
+            <ConnectButton client={client} theme="light" />
           </div>
         </div>
       </header>

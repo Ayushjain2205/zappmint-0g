@@ -23,7 +23,8 @@ import UploadIcon from "@/components/icons/upload-icon";
 import { XCircleIcon } from "@heroicons/react/20/solid";
 import { MODELS, SUGGESTED_PROMPTS } from "@/lib/constants";
 import { ZappCard, ZappIcons, ZappProject } from "@/components/ZappCard";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { client } from "@/lib/client";
+import { ConnectButton } from "thirdweb/react";
 
 // Add type for Chat
 interface Chat {
@@ -146,7 +147,7 @@ export default function Home() {
             >
               Explore
             </Link>
-            <ConnectButton />
+            <ConnectButton client={client} theme="light" />
           </div>
         </div>
       </header>

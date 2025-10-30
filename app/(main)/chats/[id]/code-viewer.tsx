@@ -11,8 +11,8 @@ import { Share } from "./share";
 import { StickToBottom } from "use-stick-to-bottom";
 import dynamic from "next/dynamic";
 import ShareIcon from "@/components/icons/share-icon";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useWalletClient } from "wagmi";
+import { ConnectButton } from "thirdweb/react";
+import { client } from "@/lib/client";
 import {
   createCoin,
   type CreateCoinArgs,
@@ -151,8 +151,7 @@ export default function CodeViewer({
   const [getError, setGetError] = useState<string | null>(null);
   const [coinData, setCoinData] = useState<any>(null);
 
-  const { address: account } = useAccount();
-  const { data: walletClientData } = useWalletClient();
+  // Wallet connection handled via thirdweb connect button elsewhere; coin flow disabled
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -175,10 +174,7 @@ export default function CodeViewer({
     setError(null);
     setResult(null);
     try {
-      if (!account) throw new Error("Please connect your wallet.");
-      if (!walletClientData) throw new Error("Wallet client not found.");
-      if (!form.name || !form.symbol || !form.description)
-        throw new Error("Please fill all fields.");
+      throw new Error("Coining is temporarily disabled.");
 
       // 1. Build and upload metadata to Zora IPFS using the SDK (with image)
       // Fetch the image as a blob and convert to File
@@ -197,11 +193,7 @@ export default function CodeViewer({
         .upload(createZoraUploaderForCreator(account));
 
       // 2. Create a viem wallet client from the wagmi walletClient
-      const walletClient = createWalletClient({
-        chain: ogGalileo,
-        transport: custom(walletClientData.transport),
-        account: account,
-      });
+      const walletClient = undefined as any;
       // 3. Create public client for 0G-Galileo-Testnet
       const publicClient = createPublicClient({
         chain: ogGalileo,
@@ -210,7 +202,7 @@ export default function CodeViewer({
       // 4. Prepare coin params
       const coinParams = {
         ...createMetadataParameters, // includes uri, name, symbol, description, image
-        payoutRecipient: (form.payoutRecipient || account) as Address,
+        payoutRecipient: form.payoutRecipient as Address,
         chainId: ogGalileo.id,
         currency: DeployCurrency.ETH,
       };
@@ -360,14 +352,7 @@ export default function CodeViewer({
             <RefreshIcon className="size-3" />
             Refresh
           </button>
-          <button
-            className="inline-flex items-center gap-1 rounded border border-bubblegumPink bg-lemonYellow px-2 py-1 text-sm text-plumPurple shadow-sm transition-colors hover:bg-bubblegumPink hover:text-lemonYellow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow"
-            style={{ fontWeight: 500 }}
-            onClick={() => setShowCoinPopup(true)}
-            type="button"
-          >
-            Coin
-          </button>
+          {/* Coin button temporarily disabled */}
         </div>
         <div className="flex items-center justify-end gap-3">
           {previousMessage ? (
@@ -430,14 +415,7 @@ export default function CodeViewer({
             <div className="flex w-full flex-col items-center px-8 pb-8">
               {!result ? (
                 <>
-                  <ConnectButton
-                    chainStatus="icon"
-                    showBalance={false}
-                    accountStatus={{
-                      smallScreen: "avatar",
-                      largeScreen: "full",
-                    }}
-                  />
+                  <ConnectButton client={client} />
                   <form
                     onSubmit={handleSubmit}
                     className="mt-6 flex w-full flex-col gap-3"
