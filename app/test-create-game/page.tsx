@@ -171,7 +171,9 @@ export default function Test0GGamePage() {
           <li>Make sure PRIVATE_KEY is set in your environment variables</li>
           <li>Select a provider (gpt-oss-120b or deepseek-r1-70b)</li>
           <li>Describe the game you want to create</li>
-          <li>Click "Create Game with 0G AI" to generate the game code</li>
+          <li>
+            Click &quot;Create Game with 0G AI&quot; to generate the game code
+          </li>
           <li>Copy the generated code and use it in your React project</li>
         </ol>
 

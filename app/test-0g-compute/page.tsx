@@ -135,13 +135,17 @@ export default function Test0GComputePage() {
         <ol className="list-inside list-decimal space-y-1 text-sm">
           <li>Make sure PRIVATE_KEY is set in your environment variables</li>
           <li>Select a provider (gpt-oss-120b or deepseek-r1-70b)</li>
-          <li>Click "Get Balance" to check your account balance</li>
-          <li>Click "Add 1 OG Token" to fund your account if needed</li>
+          <li>Click &quot;Get Balance&quot; to check your account balance</li>
           <li>
-            Click "Acknowledge Provider" to acknowledge the selected provider
+            Click &quot;Add 1 OG Token&quot; to fund your account if needed
           </li>
           <li>
-            Enter a message and click "Run Inference" to test AI inference
+            Click &quot;Acknowledge Provider&quot; to acknowledge the selected
+            provider
+          </li>
+          <li>
+            Enter a message and click &quot;Run Inference&quot; to test AI
+            inference
           </li>
         </ol>
 

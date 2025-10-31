@@ -3,14 +3,12 @@
 import CloseIcon from "@/components/icons/close-icon";
 import RefreshIcon from "@/components/icons/refresh";
 import { extractFirstCodeBlock, splitByFirstCodeFence } from "@/lib/utils";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Chat, Message } from "./page";
 import { Share } from "./share";
 import { StickToBottom } from "use-stick-to-bottom";
 import dynamic from "next/dynamic";
 import ShareIcon from "@/components/icons/share-icon";
-import { ConnectButton } from "thirdweb/react";
-import { client } from "@/lib/client";
 import {
   CodeXml,
   Eye,
@@ -21,46 +19,6 @@ import {
 } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as Select from "@radix-ui/react-select";
-import {
-  createCoin,
-  type CreateCoinArgs,
-  getCoin,
-  setApiKey,
-  DeployCurrency,
-  createMetadataBuilder,
-  createZoraUploaderForCreator,
-} from "@zoralabs/coins-sdk";
-import {
-  createPublicClient,
-  http,
-  createWalletClient,
-  custom,
-  defineChain,
-} from "viem";
-import { Address } from "viem";
-
-// Define 0G-Galileo-Testnet chain for viem
-const ogGalileo = defineChain({
-  id: 16601,
-  name: "0G-Galileo-Testnet",
-  nativeCurrency: {
-    name: "0G Token",
-    symbol: "OG",
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: { http: ["https://evmrpc-testnet.0g.ai"] },
-    public: { http: ["https://evmrpc-testnet.0g.ai"] },
-  },
-  blockExplorers: {
-    default: {
-      name: "0G Chain Explorer",
-      url: "https://chainscan-galileo.0g.ai",
-    },
-  },
-  testnet: true,
-});
-import { useS3Upload } from "next-s3-upload";
 
 const CodeRunner = dynamic(() => import("@/components/code-runner"), {
   ssr: false,
@@ -122,127 +80,6 @@ export default function CodeViewer({
   const [viewportMode, setViewportMode] = useState<"desktop" | "mobile">(
     "desktop",
   );
-  const { uploadToS3 } = useS3Upload();
-
-  // Coin creation state for popup
-  // Set Zora Coins SDK API key from env variable
-  useEffect(() => {
-    const apiKey = process.env.NEXT_PUBLIC_ZORA_API_KEY;
-    if (apiKey) {
-      setApiKey(apiKey);
-    } else {
-      console.warn(
-        "Zora API key is missing. Please set NEXT_PUBLIC_ZORA_API_KEY in your environment variables.",
-      );
-    }
-  }, []);
-
-  // Create Coin State
-  const [form, setForm] = useState({
-    name: "",
-    symbol: "",
-    description: "",
-    payoutRecipient: "",
-  });
-  // Remove imageFile state
-  // const [imageFile, setImageFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Get Coin State
-  const [getAddress, setGetAddress] = useState("");
-  const [getLoading, setGetLoading] = useState(false);
-  const [getError, setGetError] = useState<string | null>(null);
-  const [coinData, setCoinData] = useState<any>(null);
-
-  // Wallet connection handled via thirdweb connect button elsewhere; coin flow disabled
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // Remove handleImageChange function
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     setImageFile(e.target.files[0]);
-  //   } else {
-  //     setImageFile(null);
-  //   }
-  // };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    try {
-      throw new Error("Coining is temporarily disabled.");
-
-      // 1. Build and upload metadata to Zora IPFS using the SDK (with image)
-      // Fetch the image as a blob and convert to File
-      const imageResponse = await fetch(
-        `${window.location.origin}/new_logo.png`,
-      );
-      const imageBlob = await imageResponse.blob();
-      const imageFile = new File([imageBlob], "new_logo.png", {
-        type: imageBlob.type,
-      });
-      const { createMetadataParameters } = await createMetadataBuilder()
-        .withName(form.name)
-        .withSymbol(form.symbol)
-        .withDescription(form.description)
-        .withImage(imageFile)
-        .upload(createZoraUploaderForCreator(account));
-
-      // 2. Create a viem wallet client from the wagmi walletClient
-      const walletClient = undefined as any;
-      // 3. Create public client for 0G-Galileo-Testnet
-      const publicClient = createPublicClient({
-        chain: ogGalileo,
-        transport: http(ogGalileo.rpcUrls.default.http[0]),
-      });
-      // 4. Prepare coin params
-      const coinParams = {
-        ...createMetadataParameters, // includes uri, name, symbol, description, image
-        payoutRecipient: form.payoutRecipient as Address,
-        chainId: ogGalileo.id,
-        currency: DeployCurrency.ETH,
-      };
-      // 5. Create coin
-      const res = await createCoin(coinParams, walletClient, publicClient);
-      setResult(res);
-    } catch (err: any) {
-      setError(err.message || String(err));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Get Coin Handler
-  const handleGetCoin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setGetLoading(true);
-    setGetError(null);
-    setCoinData(null);
-    try {
-      if (!getAddress) throw new Error("Please enter a coin address.");
-      const trimmedAddress = getAddress.trim();
-      const response = await getCoin({
-        address: trimmedAddress,
-        chain: ogGalileo.id,
-      });
-      if (!response.data?.zora20Token)
-        throw new Error("Coin not found or invalid address.");
-      setCoinData(response.data.zora20Token);
-    } catch (err: any) {
-      setGetError(err.message || String(err));
-    } finally {
-      setGetLoading(false);
-    }
-  };
 
   return (
     <>
@@ -453,6 +290,39 @@ export default function CodeViewer({
         </div>
       </div>
 
+      {showCoinPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="relative flex w-full min-w-[350px] max-w-lg flex-col items-center rounded-xl bg-white p-0 shadow-lg">
+            <button
+              className="absolute right-2 top-2 text-bubblegumPink hover:text-lemonYellow"
+              onClick={() => setShowCoinPopup(false)}
+            >
+              <CloseIcon className="size-5" />
+            </button>
+            {/* Coin SVG at the top */}
+            <div className="flex w-full flex-col items-center pt-8">
+              <img src="/coin.svg" alt="Coin" className="mb-2 h-16 w-16" />
+              <h2 className="mb-2 font-heading text-2xl text-plumPurple">
+                Coin your $zapp
+              </h2>
+            </div>
+            <div className="flex w-full flex-col items-center px-8 pb-8">
+              <div className="mt-6 w-full rounded-lg border-2 border-bubblegumPink bg-gray-50 p-4 font-heading text-plumPurple">
+                <p className="text-center">
+                  Coin creation is being migrated to thirdweb. Coming soon!
+                </p>
+              </div>
+              <button
+                className="mt-6 gap-2 rounded-xl bg-bubblegumPink px-6 py-3 font-heading font-bold text-plumPurple shadow-md transition-all hover:bg-lemonYellow"
+                onClick={() => setShowCoinPopup(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {layout === "tabbed" ? (
         <div className="flex grow flex-col overflow-y-auto bg-white text-plumPurple">
           {activeTab === "code" ? (
@@ -516,121 +386,6 @@ export default function CodeViewer({
                     code={code}
                     key={refresh}
                   />
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showCoinPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="relative flex w-full min-w-[350px] max-w-lg flex-col items-center rounded-xl bg-white p-0 shadow-lg">
-            <button
-              className="absolute right-2 top-2 text-bubblegumPink hover:text-lemonYellow"
-              onClick={() => setShowCoinPopup(false)}
-            >
-              <CloseIcon className="size-5" />
-            </button>
-            {/* Coin SVG at the top */}
-            <div className="flex w-full flex-col items-center pt-8">
-              <img src="/coin.svg" alt="Coin" className="mb-2 h-16 w-16" />
-              {result ? (
-                <div className="mb-2 text-center font-heading text-2xl font-bold text-plumPurple">
-                  🎉 Your ${form.symbol ? `${form.symbol}` : "coin"} is live!
-                </div>
-              ) : (
-                <h2 className="mb-2 font-heading text-2xl text-plumPurple">
-                  Coin your $zapp
-                </h2>
-              )}
-            </div>
-            <div className="flex w-full flex-col items-center px-8 pb-8">
-              {!result ? (
-                <>
-                  <ConnectButton client={client} />
-                  <form
-                    onSubmit={handleSubmit}
-                    className="mt-6 flex w-full flex-col gap-3"
-                  >
-                    <input
-                      name="name"
-                      placeholder="Coin Name"
-                      value={form.name}
-                      onChange={handleChange}
-                      className="rounded-lg border-2 border-bubblegumPink p-2 font-heading text-plumPurple focus:border-lemonYellow focus:ring-2 focus:ring-lemonYellow"
-                      required
-                    />
-                    <input
-                      name="symbol"
-                      placeholder="Symbol (e.g. EGL)"
-                      value={form.symbol}
-                      onChange={handleChange}
-                      className="rounded-lg border-2 border-bubblegumPink p-2 font-heading text-plumPurple focus:border-lemonYellow focus:ring-2 focus:ring-lemonYellow"
-                      required
-                    />
-                    <textarea
-                      name="description"
-                      placeholder="Description"
-                      value={form.description}
-                      onChange={handleChange}
-                      className="rounded-lg border-2 border-bubblegumPink p-2 font-heading text-plumPurple focus:border-lemonYellow focus:ring-2 focus:ring-lemonYellow"
-                      required
-                    />
-                    <input
-                      name="payoutRecipient"
-                      placeholder="Payout Recipient (defaults to your address)"
-                      value={form.payoutRecipient}
-                      onChange={handleChange}
-                      className="rounded-lg border-2 border-bubblegumPink p-2 font-heading text-plumPurple focus:border-lemonYellow focus:ring-2 focus:ring-lemonYellow"
-                    />
-                    <button
-                      type="submit"
-                      className="gap-2 rounded-xl bg-bubblegumPink px-6 py-3 font-heading font-bold text-plumPurple shadow-md transition-all hover:bg-lemonYellow disabled:opacity-50"
-                      disabled={loading}
-                    >
-                      {loading ? "Creating..." : "Coin your $zapp"}
-                    </button>
-                  </form>
-                  {error && (
-                    <div className="mt-4 font-heading text-red-600">
-                      {error}
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="flex w-full flex-col items-center">
-                  {/* Success message is now in the header above */}
-                  <div className="mb-6 w-full rounded-lg border-2 border-bubblegumPink bg-gray-50 p-4 font-heading text-plumPurple">
-                    <div>
-                      <b>Transaction Hash:</b>{" "}
-                      <a
-                        href={`https://sepolia.basescan.org/tx/${result.hash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="break-all text-blue-600 underline"
-                      >
-                        {result.hash}
-                      </a>
-                    </div>
-                    <div>
-                      <b>Coin Address:</b>{" "}
-                      <a
-                        href={`https://sepolia.basescan.org/address/${result.address}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="break-all text-blue-600 underline"
-                      >
-                        {result.address}
-                      </a>
-                    </div>
-                  </div>
-                  <button
-                    className="gap-2 rounded-xl bg-bubblegumPink px-6 py-3 font-heading font-bold text-plumPurple shadow-md transition-all hover:bg-lemonYellow"
-                    onClick={() => setShowCoinPopup(false)}
-                  >
-                    Done
-                  </button>
                 </div>
               )}
             </div>
