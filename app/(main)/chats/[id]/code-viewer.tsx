@@ -13,6 +13,8 @@ import dynamic from "next/dynamic";
 import ShareIcon from "@/components/icons/share-icon";
 import { ConnectButton } from "thirdweb/react";
 import { client } from "@/lib/client";
+import { CodeXml, Eye } from "lucide-react";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import {
   createCoin,
   type CreateCoinArgs,
@@ -254,22 +256,48 @@ export default function CodeViewer({
           </span>
         </div>
         {layout === "tabbed" && (
-          <div className="flex rounded-lg border-2 border-bubblegumPink bg-white p-1">
-            <button
-              onClick={() => onTabChange("code")}
-              data-active={activeTab === "code" ? true : undefined}
-              className={`inline-flex h-9 w-24 items-center justify-center rounded-lg font-heading text-base font-bold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${activeTab === "code" ? "bg-lemonYellow text-plumPurple shadow-sm" : "bg-transparent text-plumPurple hover:bg-bubblegumPink/20 hover:text-plumPurple"}`}
-            >
-              Code
-            </button>
-            <button
-              onClick={() => onTabChange("preview")}
-              data-active={activeTab === "preview" ? true : undefined}
-              className={`inline-flex h-9 w-24 items-center justify-center rounded-lg font-heading text-base font-bold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${activeTab === "preview" ? "bg-lemonYellow text-plumPurple shadow-sm" : "bg-transparent text-plumPurple hover:bg-bubblegumPink/20 hover:text-plumPurple"}`}
-            >
-              Preview
-            </button>
-          </div>
+          <Tooltip.Provider>
+            <div className="flex gap-0.5 rounded-md border-2 border-bubblegumPink bg-white p-0.5">
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => onTabChange("code")}
+                    data-active={activeTab === "code" ? true : undefined}
+                    className={`inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${activeTab === "code" ? "bg-lemonYellow text-plumPurple shadow-sm" : "bg-transparent text-plumPurple hover:bg-bubblegumPink/20 hover:text-plumPurple"}`}
+                  >
+                    <CodeXml className="size-4" />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                    sideOffset={5}
+                  >
+                    Code
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    onClick={() => onTabChange("preview")}
+                    data-active={activeTab === "preview" ? true : undefined}
+                    className={`inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${activeTab === "preview" ? "bg-lemonYellow text-plumPurple shadow-sm" : "bg-transparent text-plumPurple hover:bg-bubblegumPink/20 hover:text-plumPurple"}`}
+                  >
+                    <Eye className="size-4" />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                    sideOffset={5}
+                  >
+                    Preview
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </div>
+          </Tooltip.Provider>
         )}
       </div>
 
