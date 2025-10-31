@@ -71,12 +71,15 @@ export default function UnifiedNavbar({ showAppInfo }: UnifiedNavbarProps) {
               style: {
                 height: "36px",
                 width: "100px",
+                backgroundColor: "#4C1B3F",
+                color: "#FFFFFF",
               },
             }}
             detailsButton={{
               style: {
                 height: "36px",
                 width: "100px",
+                borderColor: "#4C1B3F",
               },
               connectedAccountAvatarUrl: "",
             }}
@@ -84,6 +87,8 @@ export default function UnifiedNavbar({ showAppInfo }: UnifiedNavbarProps) {
               style: {
                 height: "36px",
                 width: "100px",
+                backgroundColor: "#4C1B3F",
+                color: "#FFFFFF",
               },
             }}
             chain={ogAristotle}
