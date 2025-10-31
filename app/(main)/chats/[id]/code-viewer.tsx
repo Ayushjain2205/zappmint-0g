@@ -439,6 +439,17 @@ export default function CodeViewer({
               </Tooltip.Portal>
             </Tooltip.Root>
           </Tooltip.Provider>
+          <button
+            type="button"
+            disabled={!message}
+            className="inline-flex items-center gap-1 rounded border-2 border-bubblegumPink bg-lemonYellow px-3 py-1.5 font-heading text-sm font-bold text-plumPurple shadow-sm transition-colors hover:bg-bubblegumPink hover:text-lemonYellow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowCoinPopup(true);
+            }}
+          >
+            Publish
+          </button>
         </div>
       </div>
 
