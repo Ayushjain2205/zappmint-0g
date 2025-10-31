@@ -41,7 +41,7 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThirdwebProvider client={client}>
+      <ThirdwebProvider>
         <Context value={{ streamPromise, setStreamPromise }}>
           {children}
         </Context>
