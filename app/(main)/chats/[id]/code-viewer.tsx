@@ -1,7 +1,5 @@
 "use client";
 
-import ChevronLeftIcon from "@/components/icons/chevron-left";
-import ChevronRightIcon from "@/components/icons/chevron-right";
 import CloseIcon from "@/components/icons/close-icon";
 import RefreshIcon from "@/components/icons/refresh";
 import { extractFirstCodeBlock, splitByFirstCodeFence } from "@/lib/utils";
@@ -13,8 +11,9 @@ import dynamic from "next/dynamic";
 import ShareIcon from "@/components/icons/share-icon";
 import { ConnectButton } from "thirdweb/react";
 import { client } from "@/lib/client";
-import { CodeXml, Eye } from "lucide-react";
+import { CodeXml, Eye, ChevronDownIcon, FileCode } from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import * as Select from "@radix-ui/react-select";
 import {
   createCoin,
   type CreateCoinArgs,
@@ -109,13 +108,7 @@ export default function CodeViewer({
     ? assistantMessages.length
     : message
       ? assistantMessages.map((m) => m.id).indexOf(message.id)
-      : 1;
-  const previousMessage =
-    currentVersion !== 0 ? assistantMessages.at(currentVersion - 1) : undefined;
-  const nextMessage =
-    currentVersion < assistantMessages.length
-      ? assistantMessages.at(currentVersion + 1)
-      : undefined;
+      : 0;
 
   const [refresh, setRefresh] = useState(0);
   const [showCoinPopup, setShowCoinPopup] = useState(false);
@@ -251,19 +244,59 @@ export default function CodeViewer({
           >
             <CloseIcon className="size-5" />
           </button>
-          <span className="font-heading text-plumPurple">
-            {title} v{currentVersion + 1}
-          </span>
+          <Select.Root
+            value={
+              currentVersion >= 0 && currentVersion < assistantMessages.length
+                ? String(currentVersion)
+                : undefined
+            }
+            onValueChange={(value) => {
+              const versionIndex = parseInt(value, 10);
+              const targetMessage = assistantMessages[versionIndex];
+              if (targetMessage) {
+                onMessageChange(targetMessage);
+              }
+            }}
+          >
+            <Select.Trigger className="inline-flex items-center gap-2 rounded-md border-2 border-bubblegumPink bg-white px-3 py-1.5 font-heading text-sm text-plumPurple hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow">
+              <FileCode className="size-4 text-plumPurple" />
+              <Select.Value>Version {currentVersion + 1}</Select.Value>
+              <Select.Icon>
+                <ChevronDownIcon className="size-4 text-plumPurple" />
+              </Select.Icon>
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Content className="z-50 min-w-[140px] overflow-hidden rounded-md border-2 border-bubblegumPink bg-white shadow-lg">
+                <Select.Viewport className="p-1">
+                  {assistantMessages.map((m, index) => (
+                    <Select.Item
+                      key={m.id}
+                      value={String(index)}
+                      className="relative flex cursor-pointer select-none items-center gap-2 rounded-md px-3 py-2 font-heading text-sm text-plumPurple outline-none hover:bg-lemonYellow hover:text-plumPurple focus:bg-lemonYellow focus:text-plumPurple data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                    >
+                      <FileCode className="size-4" />
+                      <Select.ItemText>Version {index + 1}</Select.ItemText>
+                    </Select.Item>
+                  ))}
+                </Select.Viewport>
+              </Select.Content>
+            </Select.Portal>
+          </Select.Root>
         </div>
         {layout === "tabbed" && (
           <Tooltip.Provider>
-            <div className="flex gap-0.5 rounded-md border-2 border-bubblegumPink bg-white p-0.5">
+            <div className="relative flex gap-0.5 rounded-md border-2 border-bubblegumPink bg-white p-0.5">
+              {/* Sliding indicator */}
+              <div
+                className={`absolute h-8 w-8 rounded-md bg-lemonYellow shadow-sm transition-transform duration-300 ease-in-out ${activeTab === "code" ? "translate-x-0" : "translate-x-[calc(100%+0.125rem)]"}`}
+                aria-hidden="true"
+              />
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
                   <button
                     onClick={() => onTabChange("code")}
                     data-active={activeTab === "code" ? true : undefined}
-                    className={`inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${activeTab === "code" ? "bg-lemonYellow text-plumPurple shadow-sm" : "bg-transparent text-plumPurple hover:bg-bubblegumPink/20 hover:text-plumPurple"}`}
+                    className="relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold text-plumPurple outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow"
                   >
                     <CodeXml className="size-4" />
                   </button>
@@ -282,7 +315,7 @@ export default function CodeViewer({
                   <button
                     onClick={() => onTabChange("preview")}
                     data-active={activeTab === "preview" ? true : undefined}
-                    className={`inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold outline-none transition-all duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${activeTab === "preview" ? "bg-lemonYellow text-plumPurple shadow-sm" : "bg-transparent text-plumPurple hover:bg-bubblegumPink/20 hover:text-plumPurple"}`}
+                    className="relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold text-plumPurple outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow"
                   >
                     <Eye className="size-4" />
                   </button>
@@ -381,41 +414,6 @@ export default function CodeViewer({
             Refresh
           </button>
           {/* Coin button temporarily disabled */}
-        </div>
-        <div className="flex items-center justify-end gap-3">
-          {previousMessage ? (
-            <button
-              className="text-plumPurple hover:text-lemonYellow"
-              onClick={() => onMessageChange(previousMessage)}
-            >
-              <ChevronLeftIcon className="size-4" />
-            </button>
-          ) : (
-            <button className="text-bubblegumPink opacity-25" disabled>
-              <ChevronLeftIcon className="size-4" />
-            </button>
-          )}
-
-          <p className="font-heading text-sm text-bubblegumPink">
-            Version <span className="tabular-nums">{currentVersion + 1}</span>{" "}
-            <span className="text-bubblegumPink">of</span>{" "}
-            <span className="tabular-nums">
-              {Math.max(currentVersion + 1, assistantMessages.length)}
-            </span>
-          </p>
-
-          {nextMessage ? (
-            <button
-              className="text-plumPurple hover:text-lemonYellow"
-              onClick={() => onMessageChange(nextMessage)}
-            >
-              <ChevronRightIcon className="size-4" />
-            </button>
-          ) : (
-            <button className="text-bubblegumPink opacity-25" disabled>
-              <ChevronRightIcon className="size-4" />
-            </button>
-          )}
         </div>
       </div>
       {showCoinPopup && (
