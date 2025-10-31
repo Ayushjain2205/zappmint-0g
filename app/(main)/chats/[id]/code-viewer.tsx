@@ -270,7 +270,7 @@ export default function CodeViewer({
           >
             <Select.Trigger className="inline-flex items-center gap-2 rounded-md border-2 border-bubblegumPink bg-white px-3 py-1.5 font-heading text-sm text-plumPurple hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow">
               <FileCode className="size-4 text-plumPurple" />
-              <Select.Value>Version {currentVersion + 1}</Select.Value>
+              <Select.Value>v{currentVersion + 1}</Select.Value>
               <Select.Icon>
                 <ChevronDownIcon className="size-4 text-plumPurple" />
               </Select.Icon>
@@ -458,13 +458,13 @@ export default function CodeViewer({
             <>
               {language && (
                 <div
-                  className={`flex h-full items-center justify-center px-6 py-4 ${viewportMode === "mobile" ? "mx-auto max-w-[375px]" : ""}`}
+                  className={`flex h-full items-center justify-center ${viewportMode === "mobile" ? "mx-auto max-w-[400px]" : ""}`}
                 >
                   <div
                     className={
                       viewportMode === "mobile"
                         ? "w-full max-w-[375px]"
-                        : "w-full"
+                        : "h-full w-full"
                     }
                   >
                     <CodeRunner
