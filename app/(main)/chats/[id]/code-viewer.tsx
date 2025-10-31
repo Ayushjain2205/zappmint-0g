@@ -11,7 +11,14 @@ import dynamic from "next/dynamic";
 import ShareIcon from "@/components/icons/share-icon";
 import { ConnectButton } from "thirdweb/react";
 import { client } from "@/lib/client";
-import { CodeXml, Eye, ChevronDownIcon, FileCode } from "lucide-react";
+import {
+  CodeXml,
+  Eye,
+  ChevronDownIcon,
+  FileCode,
+  Monitor,
+  Smartphone,
+} from "lucide-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import * as Select from "@radix-ui/react-select";
 import {
@@ -112,6 +119,9 @@ export default function CodeViewer({
 
   const [refresh, setRefresh] = useState(0);
   const [showCoinPopup, setShowCoinPopup] = useState(false);
+  const [viewportMode, setViewportMode] = useState<"desktop" | "mobile">(
+    "desktop",
+  );
   const { uploadToS3 } = useS3Upload();
 
   // Coin creation state for popup
@@ -237,7 +247,7 @@ export default function CodeViewer({
   return (
     <>
       <div className="flex h-16 shrink-0 items-center justify-between rounded-tl-2xl border-b-2 border-bubblegumPink bg-white px-4">
-        <div className="inline-flex items-center gap-4">
+        <div className="inline-flex flex-1 items-center gap-4">
           <button
             className="text-bubblegumPink hover:text-lemonYellow"
             onClick={onClose}
@@ -282,23 +292,42 @@ export default function CodeViewer({
               </Select.Content>
             </Select.Portal>
           </Select.Root>
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-bubblegumPink bg-white text-plumPurple transition-colors hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow"
+                  onClick={() => setRefresh((r) => r + 1)}
+                >
+                  <RefreshIcon className="size-4" />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                  sideOffset={5}
+                >
+                  Refresh
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
         </div>
-        {layout === "tabbed" && (
+        <div className="inline-flex flex-1 items-center justify-center">
           <Tooltip.Provider>
             <div className="relative flex gap-0.5 rounded-md border-2 border-bubblegumPink bg-white p-0.5">
               {/* Sliding indicator */}
               <div
-                className={`absolute h-8 w-8 rounded-md bg-lemonYellow shadow-sm transition-transform duration-300 ease-in-out ${activeTab === "code" ? "translate-x-0" : "translate-x-[calc(100%+0.125rem)]"}`}
+                className={`absolute h-8 w-8 rounded-md bg-lemonYellow shadow-sm transition-transform duration-300 ease-in-out ${viewportMode === "desktop" ? "translate-x-0" : "translate-x-[calc(100%+0.125rem)]"}`}
                 aria-hidden="true"
               />
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
                   <button
-                    onClick={() => onTabChange("code")}
-                    data-active={activeTab === "code" ? true : undefined}
-                    className="relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold text-plumPurple outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow"
+                    onClick={() => setViewportMode("desktop")}
+                    className={`relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${viewportMode === "desktop" ? "text-plumPurple" : "text-plumPurple opacity-60"}`}
                   >
-                    <CodeXml className="size-4" />
+                    <Monitor className="size-4" />
                   </button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
@@ -306,18 +335,17 @@ export default function CodeViewer({
                     className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
                     sideOffset={5}
                   >
-                    Code
+                    Desktop
                   </Tooltip.Content>
                 </Tooltip.Portal>
               </Tooltip.Root>
               <Tooltip.Root>
                 <Tooltip.Trigger asChild>
                   <button
-                    onClick={() => onTabChange("preview")}
-                    data-active={activeTab === "preview" ? true : undefined}
-                    className="relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold text-plumPurple outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow"
+                    onClick={() => setViewportMode("mobile")}
+                    className={`relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow ${viewportMode === "mobile" ? "text-plumPurple" : "text-plumPurple opacity-60"}`}
                   >
-                    <Eye className="size-4" />
+                    <Smartphone className="size-4" />
                   </button>
                 </Tooltip.Trigger>
                 <Tooltip.Portal>
@@ -325,13 +353,93 @@ export default function CodeViewer({
                     className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
                     sideOffset={5}
                   >
-                    Preview
+                    Mobile
                   </Tooltip.Content>
                 </Tooltip.Portal>
               </Tooltip.Root>
             </div>
           </Tooltip.Provider>
-        )}
+        </div>
+        <div className="inline-flex flex-1 items-center justify-end gap-2">
+          {layout === "tabbed" && (
+            <Tooltip.Provider>
+              <div className="relative flex gap-0.5 rounded-md border-2 border-bubblegumPink bg-white p-0.5">
+                {/* Sliding indicator */}
+                <div
+                  className={`absolute h-8 w-8 rounded-md bg-lemonYellow shadow-sm transition-transform duration-300 ease-in-out ${activeTab === "code" ? "translate-x-0" : "translate-x-[calc(100%+0.125rem)]"}`}
+                  aria-hidden="true"
+                />
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      onClick={() => onTabChange("code")}
+                      data-active={activeTab === "code" ? true : undefined}
+                      className="relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold text-plumPurple outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow"
+                    >
+                      <CodeXml className="size-4" />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                      sideOffset={5}
+                    >
+                      Code
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button
+                      onClick={() => onTabChange("preview")}
+                      data-active={activeTab === "preview" ? true : undefined}
+                      className="relative z-10 inline-flex h-8 w-8 items-center justify-center rounded-md font-heading text-base font-bold text-plumPurple outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-lemonYellow"
+                    >
+                      <Eye className="size-4" />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                      sideOffset={5}
+                    >
+                      Preview
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              </div>
+            </Tooltip.Provider>
+          )}
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <button
+                  type="button"
+                  disabled={!message}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-bubblegumPink bg-white text-plumPurple transition-colors hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (message) {
+                      navigator.clipboard.writeText(
+                        `${window.location.origin}/share/v2/${message.id}`,
+                      );
+                    }
+                  }}
+                >
+                  <ShareIcon className="size-4" />
+                </button>
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                  sideOffset={5}
+                >
+                  Share
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+        </div>
       </div>
 
       {layout === "tabbed" ? (
@@ -349,13 +457,23 @@ export default function CodeViewer({
           ) : (
             <>
               {language && (
-                <div className="flex h-full items-center justify-center px-6 py-4">
-                  <CodeRunner
-                    onRequestFix={onRequestFix}
-                    language={language}
-                    code={code}
-                    key={refresh}
-                  />
+                <div
+                  className={`flex h-full items-center justify-center px-6 py-4 ${viewportMode === "mobile" ? "mx-auto max-w-[375px]" : ""}`}
+                >
+                  <div
+                    className={
+                      viewportMode === "mobile"
+                        ? "w-full max-w-[375px]"
+                        : "w-full"
+                    }
+                  >
+                    <CodeRunner
+                      onRequestFix={onRequestFix}
+                      language={language}
+                      code={code}
+                      key={refresh}
+                    />
+                  </div>
                 </div>
               )}
             </>
@@ -370,52 +488,30 @@ export default function CodeViewer({
             <div className="border-t border-bubblegumPink bg-bubblegumPink/70 px-4 py-4 font-heading text-bubblegumPink">
               Output
             </div>
-            <div className="flex grow items-center justify-center border-t border-bubblegumPink">
+            <div
+              className={`flex grow items-center justify-center border-t border-bubblegumPink ${viewportMode === "mobile" ? "mx-auto max-w-[375px]" : ""}`}
+            >
               {!streamAppIsGenerating && (
-                <CodeRunner
-                  onRequestFix={onRequestFix}
-                  language={language}
-                  code={code}
-                  key={refresh}
-                />
+                <div
+                  className={
+                    viewportMode === "mobile"
+                      ? "w-full max-w-[375px]"
+                      : "w-full"
+                  }
+                >
+                  <CodeRunner
+                    onRequestFix={onRequestFix}
+                    language={language}
+                    code={code}
+                    key={refresh}
+                  />
+                </div>
               )}
             </div>
           </div>
         </div>
       )}
 
-      <div className="flex items-center justify-between rounded-bl-2xl border-t-2 border-bubblegumPink bg-white px-4 py-4">
-        <div className="inline-flex items-center gap-2.5 font-heading text-sm text-bubblegumPink">
-          <form className="flex">
-            <button
-              type="submit"
-              disabled={!message}
-              className="inline-flex items-center gap-1 rounded border border-bubblegumPink bg-lemonYellow px-2 py-1 text-sm text-plumPurple shadow-sm transition-colors hover:bg-bubblegumPink hover:text-lemonYellow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow disabled:opacity-50"
-              style={{ fontWeight: 500 }}
-              onClick={(e) => {
-                e.preventDefault();
-                if (message) {
-                  navigator.clipboard.writeText(
-                    `${window.location.origin}/share/v2/${message.id}`,
-                  );
-                }
-              }}
-            >
-              <ShareIcon className="size-3" />
-              Share
-            </button>
-          </form>
-          <button
-            className="inline-flex items-center gap-1 rounded border border-bubblegumPink bg-lemonYellow px-2 py-1 text-sm text-plumPurple shadow-sm transition-colors hover:bg-bubblegumPink hover:text-lemonYellow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow"
-            style={{ fontWeight: 500 }}
-            onClick={() => setRefresh((r) => r + 1)}
-          >
-            <RefreshIcon className="size-3" />
-            Refresh
-          </button>
-          {/* Coin button temporarily disabled */}
-        </div>
-      </div>
       {showCoinPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="relative flex w-full min-w-[350px] max-w-lg flex-col items-center rounded-xl bg-white p-0 shadow-lg">
