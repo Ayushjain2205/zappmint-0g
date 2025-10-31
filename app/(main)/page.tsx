@@ -17,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { use, useState, useRef, useTransition, useEffect } from "react";
 import { createChat, getAllChats } from "./actions";
 import { Context } from "./providers";
-import Header from "@/components/header";
 import { useS3Upload } from "next-s3-upload";
 import UploadIcon from "@/components/icons/upload-icon";
 import { XCircleIcon } from "@heroicons/react/20/solid";
@@ -25,6 +24,7 @@ import { MODELS, SUGGESTED_PROMPTS } from "@/lib/constants";
 import { ZappCard, ZappIcons, ZappProject } from "@/components/ZappCard";
 import { client } from "@/lib/client";
 import { ConnectButton } from "thirdweb/react";
+import UnifiedNavbar from "@/components/unified-navbar";
 
 // Add type for Chat
 interface Chat {
@@ -121,36 +121,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-softPeach font-body text-plumPurple">
-      {/* Header */}
-      <header className="absolute left-0 top-0 z-50 w-full px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <div className="">
-              <Image
-                src="/new_logo.png"
-                alt="ZapForge Logo"
-                width={48}
-                height={48}
-                priority
-                className="object-contain"
-              />
-            </div>
-            <span className="ml-2 text-2xl font-bold tracking-wide">
-              <span className="font-sketch text-plumPurple">Zapp</span>
-              <span className="font-heading text-plumPurple">mint</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/zapps"
-              className="rounded-lg bg-bubblegumPink px-4 py-2 font-heading text-sm font-medium text-plumPurple transition-colors hover:bg-lemonYellow"
-            >
-              Explore
-            </Link>
-            <ConnectButton client={client} theme="light" />
-          </div>
-        </div>
-      </header>
+      {/* Unified Navbar */}
+      <UnifiedNavbar />
 
       {/* Hero Section */}
       <section className="relative flex min-h-screen flex-col justify-center px-4 pb-20 pt-32">

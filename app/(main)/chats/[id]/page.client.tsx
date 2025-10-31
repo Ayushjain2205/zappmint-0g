@@ -1,9 +1,8 @@
 "use client";
 
 import { createMessage } from "@/app/(main)/actions";
-import LogoSmall from "@/components/icons/logo-small";
 import { splitByFirstCodeFence } from "@/lib/utils";
-import Link from "next/link";
+import UnifiedNavbar from "@/components/unified-navbar";
 import { useRouter } from "next/navigation";
 import { startTransition, use, useEffect, useRef, useState } from "react";
 import { ChatCompletionStream } from "together-ai/lib/ChatCompletionStream.mjs";
@@ -91,12 +90,10 @@ export default function PageClient({ chat }: { chat: Chat }) {
 
   return (
     <div className="h-dvh">
-      <div className="flex h-full">
+      <UnifiedNavbar />
+      <div className="flex h-full pt-16">
         <div className="mx-auto flex w-full shrink-0 flex-col overflow-hidden lg:w-1/2">
           <div className="flex items-center gap-4 px-4 py-4">
-            <Link href="/">
-              <LogoSmall />
-            </Link>
             <p className="font-heading font-semibold text-plumPurple">
               {chat.title}
             </p>

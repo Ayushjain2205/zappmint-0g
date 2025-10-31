@@ -286,3 +286,22 @@ body {
 .font-sketch {
   font-family: "Londrina Sketch", cursive;
 }
+
+.tw-connected-wallet__account_avatar {
+  display: none !important;
+}
+
+.tw-connected-wallet > img {
+  display: none !important;
+}
+
+.tw-connected-wallet > div:first-child {
+  display: none !important;
+}
+
+.tw-connected-wallet > div:not([style*="border-radius: 100%"]) {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100%;
+}
