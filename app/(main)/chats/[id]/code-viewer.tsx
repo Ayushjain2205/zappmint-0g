@@ -129,26 +129,57 @@ export default function CodeViewer({
               </Select.Content>
             </Select.Portal>
           </Select.Root>
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <button
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-bubblegumPink bg-white text-plumPurple transition-colors hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow"
-                  onClick={() => setRefresh((r) => r + 1)}
-                >
-                  <RefreshIcon className="size-4" />
-                </button>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
-                  sideOffset={5}
-                >
-                  Refresh
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
+          <div className="flex items-center gap-1">
+            <Tooltip.Provider>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-white text-plumPurple transition-colors hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow"
+                    onClick={() => setRefresh((r) => r + 1)}
+                  >
+                    <RefreshIcon className="size-3.5" />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                    sideOffset={5}
+                  >
+                    Refresh
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+            <Tooltip.Provider>
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <button
+                    type="button"
+                    disabled={!message}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-white text-plumPurple transition-colors hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow disabled:cursor-not-allowed disabled:opacity-50"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (message) {
+                        navigator.clipboard.writeText(
+                          `${window.location.origin}/share/v2/${message.id}`,
+                        );
+                      }
+                    }}
+                  >
+                    <ShareIcon className="size-3.5" />
+                  </button>
+                </Tooltip.Trigger>
+                <Tooltip.Portal>
+                  <Tooltip.Content
+                    className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
+                    sideOffset={5}
+                  >
+                    Share
+                  </Tooltip.Content>
+                </Tooltip.Portal>
+              </Tooltip.Root>
+            </Tooltip.Provider>
+          </div>
         </div>
         <div className="inline-flex flex-1 items-center justify-center">
           <Tooltip.Provider>
@@ -247,35 +278,6 @@ export default function CodeViewer({
               </div>
             </Tooltip.Provider>
           )}
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <button
-                  type="button"
-                  disabled={!message}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-md border-2 border-bubblegumPink bg-white text-plumPurple transition-colors hover:bg-bubblegumPink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow disabled:cursor-not-allowed disabled:opacity-50"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (message) {
-                      navigator.clipboard.writeText(
-                        `${window.location.origin}/share/v2/${message.id}`,
-                      );
-                    }
-                  }}
-                >
-                  <ShareIcon className="size-4" />
-                </button>
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  className="rounded-lg bg-plumPurple px-3 py-1.5 font-heading text-sm text-white shadow-lg"
-                  sideOffset={5}
-                >
-                  Share
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
           <button
             type="button"
             disabled={!message}

@@ -91,7 +91,7 @@ export default function PageClient({ chat }: { chat: Chat }) {
   return (
     <div className="h-dvh">
       <UnifiedNavbar />
-      <div className="flex h-full pt-16">
+      <div className="flex h-full pt-[44px]">
         <div className="mx-auto flex w-full shrink-0 flex-col overflow-hidden lg:w-1/2">
           <div className="flex items-center gap-4 px-4 py-4">
             <p className="font-heading font-semibold text-plumPurple">
