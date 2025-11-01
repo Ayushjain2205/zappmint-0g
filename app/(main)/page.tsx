@@ -120,25 +120,25 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-softPeach font-body text-plumPurple">
+    <div className="bg-softPeach font-body text-plumPurple">
       {/* Unified Navbar */}
       <UnifiedNavbar />
 
       {/* Hero Section */}
-      <section className="relative flex min-h-screen flex-col justify-center px-4 pb-20 pt-32">
+      <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-4 pb-20 pt-32">
         {/* Decorative Cranes */}
         <img
           src="/crane-left.svg"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none fixed left-0 top-1/2 z-0 hidden w-[300px] max-w-none -translate-y-1/2 select-none sm:block"
+          className="pointer-events-none absolute left-0 top-1/2 z-0 hidden w-[300px] max-w-none -translate-y-1/2 select-none sm:block"
           style={{ minHeight: 400 }}
         />
         <img
           src="/crane-right.svg"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none fixed bottom-0 right-0 z-0 hidden w-[350px] max-w-none select-none sm:block"
+          className="pointer-events-none absolute bottom-0 right-0 z-0 hidden w-[350px] max-w-none select-none sm:block"
           style={{ minHeight: 500 }}
         />
         <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-bubblegumPink/20 via-lemonYellow/10 to-transparent" />
@@ -485,6 +485,111 @@ export default function Home() {
               ))}
             </div>
           </form>
+        </div>
+      </section>
+
+      {/* Top Zapps Section */}
+      <section className="relative z-20 flex flex-col px-4 py-20">
+        <div className="container mx-auto">
+          {/* Header Section */}
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 font-heading text-5xl font-bold text-plumPurple">
+              Top Zapps ⭐
+            </h2>
+            <p className="mb-8 text-lg text-plumPurple/80">
+              Discover the most popular and trending Zapps built by the
+              <br />
+              community
+            </p>
+          </div>
+          
+          {loadingApps ? (
+            <div className="flex items-center justify-center py-8">
+              <Spinner />
+            </div>
+          ) : chats.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-plumPurple/60">No zapps yet. Create one above!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {chats.slice(0, 8).map((chat, idx) => {
+                // Simple mapping for category/icon/gradient
+                const categories = [
+                  {
+                    category: "Finance",
+                    icon: (
+                      <ZappIcons.Wallet className="h-4 w-4 text-lemonYellow" />
+                    ),
+                    gradient: "from-lemonYellow to-tangerinePop",
+                  },
+                  {
+                    category: "NFT",
+                    icon: (
+                      <ZappIcons.ImageIcon className="h-4 w-4 text-bubblegumPink" />
+                    ),
+                    gradient: "from-bubblegumPink to-plumPurple",
+                  },
+                  {
+                    category: "Analytics",
+                    icon: (
+                      <ZappIcons.BarChart3 className="h-4 w-4 text-skyBlue" />
+                    ),
+                    gradient: "from-skyBlue to-mintGreen",
+                  },
+                  {
+                    category: "DeFi",
+                    icon: <ZappIcons.Zap className="h-4 w-4 text-mintGreen" />,
+                    gradient: "from-mintGreen to-lemonYellow",
+                  },
+                  {
+                    category: "Social",
+                    icon: (
+                      <ZappIcons.Users className="h-4 w-4 text-plumPurple" />
+                    ),
+                    gradient: "from-plumPurple to-bubblegumPink",
+                  },
+                  {
+                    category: "Metaverse",
+                    icon: (
+                      <ZappIcons.Boxes className="h-4 w-4 text-tangerinePop" />
+                    ),
+                    gradient: "from-tangerinePop to-bubblegumPink",
+                  },
+                  {
+                    category: "Governance",
+                    icon: (
+                      <ZappIcons.Layout className="h-4 w-4 text-lemonYellow" />
+                    ),
+                    gradient: "from-lemonYellow to-tangerinePop",
+                  },
+                  {
+                    category: "Explorer",
+                    icon: (
+                      <ZappIcons.Globe className="h-4 w-4 text-mintGreen" />
+                    ),
+                    gradient: "from-mintGreen to-skyBlue",
+                  },
+                ];
+                const cat = categories[idx % categories.length];
+                return (
+                  <ZappCard
+                    key={chat.id}
+                    project={{
+                      id: chat.id,
+                      title: chat.title || chat.prompt.slice(0, 32),
+                      creator: "0x0000000000000000000000000000000000000000", // Placeholder
+                      category: cat.category,
+                      icon: cat.icon,
+                      gradient: cat.gradient,
+                      description: chat.prompt.slice(0, 100),
+                      createdAt: chat.createdAt,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
     </div>

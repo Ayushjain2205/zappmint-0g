@@ -181,7 +181,7 @@ export default function CodeViewer({
             </Tooltip.Provider>
           </div>
         </div>
-        <div className="inline-flex flex-1 items-center justify-center">
+        <div className="hidden flex-1 items-center justify-center md:inline-flex">
           <Tooltip.Provider>
             <div className="relative flex gap-0.5 rounded-md border-2 border-bubblegumPink bg-white p-0.5">
               {/* Sliding indicator */}
