@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import LogoSmall from "@/components/icons/logo-small";
 import Link from "next/link";
 import AppOnlyOutputClient from "./AppOnlyOutput.client";
+import TokenMarquee from "@/components/TokenMarquee";
 
 function Spinner() {
   return (
@@ -55,29 +56,34 @@ export default function AppViewPageClient({ id }: { id: string }) {
   let assistantMessage = data?.assistantMessage;
 
   return (
-    <div className="bg-softPeach text-plumPurple min-h-screen font-body">
+    <div className="min-h-screen bg-softPeach pb-24 font-body text-plumPurple">
+      {/* Token Marquee */}
+      <TokenMarquee
+        appName={chat?.title || chat?.prompt}
+        creator="0xdsc..poc"
+      />
       {/* Top Heading Bar */}
-      <div className="border-bubblegumPink flex items-center justify-between border-b bg-white/90 px-4 py-2 shadow-sm">
+      <div className="flex items-center justify-between border-b border-bubblegumPink bg-white/90 px-4 py-2 shadow-sm">
         <Link href="/">
           <div className="flex items-center gap-2">
             <LogoSmall />
-            <span className="from-bubblegumPink to-lemonYellow bg-gradient-to-r bg-clip-text font-heading text-lg font-bold text-transparent">
+            <span className="bg-gradient-to-r from-bubblegumPink to-lemonYellow bg-clip-text font-heading text-lg font-bold text-transparent">
               ZappMint
             </span>
           </div>
         </Link>
         <div className="flex flex-1 justify-center">
           <div className="text-center">
-            <div className="text-plumPurple max-w-xs truncate font-heading font-semibold sm:max-w-md md:max-w-lg">
+            <div className="max-w-xs truncate font-heading font-semibold text-plumPurple sm:max-w-md md:max-w-lg">
               {chat ? chat.title || chat.prompt : "Loading..."}
             </div>
-            <div className="text-bubblegumPink text-xs">
+            <div className="text-xs text-bubblegumPink">
               {chat ? new Date(chat.createdAt).toLocaleString() : null}
             </div>
           </div>
         </div>
         <div>
-          <button className="from-lemonYellow to-bubblegumPink text-plumPurple hover:from-bubblegumPink hover:to-lemonYellow rounded bg-gradient-to-r px-4 py-1.5 font-heading font-bold shadow transition hover:shadow-lg">
+          <button className="rounded bg-gradient-to-r from-lemonYellow to-bubblegumPink px-4 py-1.5 font-heading font-bold text-plumPurple shadow transition hover:from-bubblegumPink hover:to-lemonYellow hover:shadow-lg">
             Remix
           </button>
         </div>
@@ -87,17 +93,17 @@ export default function AppViewPageClient({ id }: { id: string }) {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24">
             <Spinner />
-            <div className="text-bubblegumPink mt-4">Loading app...</div>
+            <div className="mt-4 text-bubblegumPink">Loading app...</div>
           </div>
         ) : error || !chat ? (
           <div className="flex flex-col items-center justify-center py-24">
             <Spinner />
-            <div className="text-bubblegumPink mt-4">No app output found.</div>
+            <div className="mt-4 text-bubblegumPink">No app output found.</div>
           </div>
         ) : !assistantMessage ? (
           <div className="flex flex-col items-center justify-center py-24">
             <Spinner />
-            <div className="text-bubblegumPink mt-4">No app output found.</div>
+            <div className="mt-4 text-bubblegumPink">No app output found.</div>
           </div>
         ) : (
           <div className="flex w-full justify-center">

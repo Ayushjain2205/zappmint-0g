@@ -2,7 +2,7 @@ import { getPrisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import AppOnlyOutputClient from "./AppOnlyOutput.client";
 import type { Chat, Message } from "../../chats/[id]/page";
-import TokenDrawer from "@/components/TokenDrawer";
+import TokenMarquee from "@/components/TokenMarquee";
 import AppNavbar from "@/components/app-navbar";
 
 function Spinner() {
@@ -47,9 +47,9 @@ export default async function AppViewPage({
     .at(-1);
 
   return (
-    <div className="min-h-screen bg-softPeach font-body text-plumPurple">
-      {/* Token Drawer */}
-      <TokenDrawer />
+    <div className="min-h-screen bg-softPeach pb-24 font-body text-plumPurple">
+      {/* Token Marquee */}
+      <TokenMarquee appName={chat.title || chat.prompt} creator="0xdsc..poc" />
       {/* Unified Navbar with App Info */}
       <AppNavbar title={chat.title || chat.prompt} creator="0xdsc..poc" />
       {/* App Output */}

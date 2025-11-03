@@ -502,14 +502,16 @@ export default function Home() {
               community
             </p>
           </div>
-          
+
           {loadingApps ? (
             <div className="flex items-center justify-center py-8">
               <Spinner />
             </div>
           ) : chats.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-plumPurple/60">No zapps yet. Create one above!</p>
+            <div className="py-12 text-center">
+              <p className="text-plumPurple/60">
+                No zapps yet. Create one above!
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
