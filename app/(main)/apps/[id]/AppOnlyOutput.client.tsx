@@ -19,7 +19,7 @@ export default function AppOnlyOutputClient({
   }
 
   return (
-    <div className="w-full max-w-2xl rounded-lg bg-white p-6 text-base shadow">
+    <div className="flex h-full w-full flex-col bg-white text-base shadow">
       <CodeRunner
         language={codeBlock.language || ""}
         code={codeBlock.code}

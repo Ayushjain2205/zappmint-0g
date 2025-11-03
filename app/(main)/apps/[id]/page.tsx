@@ -47,13 +47,13 @@ export default async function AppViewPage({
     .at(-1);
 
   return (
-    <div className="min-h-screen bg-softPeach pt-[100px] font-body text-plumPurple">
+    <div className="flex h-screen flex-col bg-softPeach font-body text-plumPurple">
       {/* Unified Navbar with App Info */}
       <AppNavbar title={chat.title || chat.prompt} creator="0xdsc..poc" />
       {/* Token Marquee */}
       <TokenMarquee appName={chat.title || chat.prompt} creator="0xdsc..poc" />
-      {/* App Output */}
-      <div className="flex min-h-[60vh] flex-1 flex-col items-center justify-center pt-16">
+      {/* App Output - padding-top accounts for fixed navbar (~44px) and marquee (~40px) */}
+      <div className="flex flex-1 flex-col overflow-hidden pt-[86px]">
         {!assistantMessage ? (
           <div className="flex flex-col items-center justify-center py-24">
             <Spinner />
@@ -62,7 +62,7 @@ export default async function AppViewPage({
             </div>
           </div>
         ) : (
-          <div className="flex w-full justify-center">
+          <div className="flex h-full w-full">
             <AppOnlyOutputClient
               assistantMessage={assistantMessage as Message}
             />

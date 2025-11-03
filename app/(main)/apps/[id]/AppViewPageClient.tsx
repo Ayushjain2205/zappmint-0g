@@ -56,7 +56,7 @@ export default function AppViewPageClient({ id }: { id: string }) {
   let assistantMessage = data?.assistantMessage;
 
   return (
-    <div className="min-h-screen bg-softPeach pt-[100px] font-body text-plumPurple">
+    <div className="flex h-screen flex-col bg-softPeach font-body text-plumPurple">
       {/* Top Heading Bar */}
       <div className="flex items-center justify-between border-b border-bubblegumPink bg-white/90 px-4 py-2 shadow-sm">
         <Link href="/">
@@ -89,7 +89,7 @@ export default function AppViewPageClient({ id }: { id: string }) {
         creator="0xdsc..poc"
       />
       {/* App Output */}
-      <div className="flex min-h-[60vh] flex-1 flex-col items-center justify-center">
+      <div className="flex flex-1 flex-col overflow-hidden">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24">
             <Spinner />
@@ -106,7 +106,7 @@ export default function AppViewPageClient({ id }: { id: string }) {
             <div className="mt-4 text-bubblegumPink">No app output found.</div>
           </div>
         ) : (
-          <div className="flex w-full justify-center">
+          <div className="flex h-full w-full">
             <AppOnlyOutputClient assistantMessage={assistantMessage} />
           </div>
         )}
