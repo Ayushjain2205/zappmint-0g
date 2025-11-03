@@ -326,7 +326,7 @@ export default function CodeViewer({
       )}
 
       {layout === "tabbed" ? (
-        <div className="flex grow flex-col overflow-y-auto bg-white text-plumPurple">
+        <div className="flex grow flex-col overflow-y-auto rounded-bl-2xl bg-white text-plumPurple">
           {activeTab === "code" ? (
             <StickToBottom
               className="relative grow overflow-hidden px-6 py-4"
