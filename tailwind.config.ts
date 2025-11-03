@@ -52,7 +52,7 @@ const config: Config = {
         spark: "spark 0.5s ease-out forwards",
         forge: "forge 3s ease-in-out infinite",
         glow: "glow 1.5s ease-in-out infinite alternate",
-        marquee: "marquee 30s linear infinite",
+        marquee: "marquee 20s linear infinite",
       },
       keyframes: {
         float: {
@@ -84,7 +84,7 @@ const config: Config = {
         },
         marquee: {
           "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-33.333%)" },
+          "100%": { transform: "translateX(-50%)" },
         },
       },
     },

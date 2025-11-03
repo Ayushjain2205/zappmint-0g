@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import BuyTokenPopup from "./BuyTokenPopup";
+import BuyTokenPopup from "@/components/BuyTokenPopup";
 
 interface Token {
   name: string;
@@ -9,6 +9,7 @@ interface Token {
   address: string;
   marketCap?: string;
   volume24h?: string;
+  marketCapChange?: string;
   creator?: string;
   totalSupply?: string;
   dateCreated?: string;
@@ -26,8 +27,9 @@ const APP_TOKEN: Token = {
   price: "0.000035",
   holders: "2",
   address: "0x6a81...d99c",
-  marketCap: "35625.99",
-  volume24h: "12.57",
+  marketCap: "$3.3M",
+  volume24h: "$1.3M",
+  marketCapChange: "-9.47%",
   creator: "0xchristopher",
   totalSupply: "1000000000",
   dateCreated: "19 Jun 2025",
@@ -53,83 +55,180 @@ export default function TokenMarquee({ appName, creator }: TokenMarqueeProps) {
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-plumPurple bg-white py-2">
+      <div className="fixed left-0 right-0 top-[44px] z-40 border-b border-t border-plumPurple bg-white px-2 py-1.5">
         {/* Desktop: Static display */}
-        <div className="hidden md:flex md:items-center md:justify-center md:gap-6">
-          {appName && (
-            <>
-              <span className="font-semibold">{appName}</span>
-              <span className="text-plumPurple/60">•</span>
-            </>
-          )}
-          {creator && (
-            <>
-              <span>{creator}</span>
-              <span className="text-plumPurple/60">•</span>
-            </>
-          )}
-          <span className="font-semibold">{token.name}</span>
-          {token.volume24h && (
-            <>
-              <span className="text-plumPurple/60">•</span>
-              <span>Vol: {token.volume24h}</span>
-            </>
-          )}
-          {token.marketCap && (
-            <>
-              <span className="text-plumPurple/60">•</span>
-              <span>MCap: {token.marketCap}</span>
-            </>
-          )}
-          <span className="text-plumPurple/60">•</span>
-          <span
-            className="cursor-pointer text-mintGreen hover:underline"
+        <div className="hidden md:flex md:items-center md:justify-between md:px-4">
+          {/* Left: App name and creator */}
+          <div className="flex items-center gap-1.5 font-mono text-xs">
+            {appName && (
+              <>
+                <span className="font-semibold text-plumPurple">{appName}</span>
+                {creator && (
+                  <>
+                    <span className="text-plumPurple/60">by</span>
+                    <span className="text-plumPurple">{creator}</span>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Center: Token info section with highlighted background */}
+          <div className="flex items-center gap-2.5 rounded-lg bg-mintGreen/30 px-3 py-1 font-mono text-xs">
+            {/* Token symbol */}
+            <div className="flex items-center gap-1.5">
+              <div className="flex h-5 w-5 items-center justify-center rounded bg-plumPurple">
+                <span className="text-[10px] font-bold text-white">$</span>
+              </div>
+              <span className="font-bold text-plumPurple">
+                {token.name.replace("$", "")}
+              </span>
+            </div>
+
+            {/* Separator */}
+            <div className="h-4 w-px bg-plumPurple/20"></div>
+
+            {/* Market Cap */}
+            {token.marketCap && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-plumPurple/70">mcap:</span>
+                <span className="font-semibold text-plumPurple">
+                  {token.marketCap}
+                </span>
+                {token.marketCapChange && (
+                  <span
+                    className={`font-semibold ${
+                      token.marketCapChange.startsWith("-")
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {token.marketCapChange}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Separator */}
+            <div className="h-4 w-px bg-plumPurple/20"></div>
+
+            {/* Volume */}
+            {token.volume24h && (
+              <div className="flex items-center gap-1.5">
+                <span className="text-plumPurple/70">vol:</span>
+                <span className="font-semibold text-plumPurple">
+                  {token.volume24h}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Right: Buy button */}
+          <button
+            className="flex items-center gap-1.5 rounded-lg bg-plumPurple px-3 py-1 font-mono text-xs font-semibold text-white transition-colors hover:bg-plumPurple/90"
             onClick={() => handleBuyClick(token)}
           >
-            Buy
-          </span>
+            <span>Buy</span>
+            <span>→</span>
+          </button>
         </div>
 
         {/* Mobile: Marquee scrolling */}
         <div className="overflow-hidden md:hidden">
           <div className="animate-marquee flex whitespace-nowrap">
-            {[...Array(5)].map((_, i) => (
+            {/* Render content 2 times for seamless loop */}
+            {[...Array(2)].map((_, setIndex) => (
               <div
-                key={i}
-                className="mx-6 inline-flex items-center gap-2 text-sm"
+                key={setIndex}
+                className="flex shrink-0 items-center gap-4"
+                style={{ width: "max-content" }}
               >
-                {appName && (
-                  <>
-                    <span className="font-semibold">{appName}</span>
-                    <span className="text-plumPurple/60">•</span>
-                  </>
-                )}
-                {creator && (
-                  <>
-                    <span>{creator}</span>
-                    <span className="text-plumPurple/60">•</span>
-                  </>
-                )}
-                <span className="font-semibold">{token.name}</span>
-                {token.volume24h && (
-                  <>
-                    <span className="text-plumPurple/60">•</span>
-                    <span>Vol: {token.volume24h}</span>
-                  </>
-                )}
-                {token.marketCap && (
-                  <>
-                    <span className="text-plumPurple/60">•</span>
-                    <span>MCap: {token.marketCap}</span>
-                  </>
-                )}
-                <span className="text-plumPurple/60">•</span>
-                <span
-                  className="cursor-pointer text-mintGreen hover:underline"
-                  onClick={() => handleBuyClick(token)}
-                >
-                  Buy
-                </span>
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={`${setIndex}-${i}`}
+                    className="mx-2 inline-flex shrink-0 cursor-pointer items-center gap-4"
+                    onClick={() => handleBuyClick(token)}
+                  >
+                    {/* App name and creator - same as desktop */}
+                    {appName && (
+                      <div className="flex items-center gap-1.5 font-mono text-xs">
+                        <span className="whitespace-nowrap font-semibold text-plumPurple">
+                          {appName}
+                        </span>
+                        {creator && (
+                          <>
+                            <span className="text-plumPurple/60">by</span>
+                            <span className="whitespace-nowrap text-plumPurple">
+                              {creator}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Token info section - exact same as desktop */}
+                    <div className="flex items-center gap-2.5 rounded-lg bg-mintGreen/30 px-3 py-1 font-mono text-xs">
+                      {/* Token symbol */}
+                      <div className="flex items-center gap-1.5">
+                        <div className="flex h-5 w-5 items-center justify-center rounded bg-plumPurple">
+                          <span className="text-[10px] font-bold text-white">
+                            $
+                          </span>
+                        </div>
+                        <span className="whitespace-nowrap font-bold text-plumPurple">
+                          {token.name.replace("$", "")}
+                        </span>
+                      </div>
+
+                      {/* Separator */}
+                      <div className="h-4 w-px bg-plumPurple/20"></div>
+
+                      {/* Market Cap */}
+                      {token.marketCap && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="whitespace-nowrap text-plumPurple/70">
+                            mcap:
+                          </span>
+                          <span className="whitespace-nowrap font-semibold text-plumPurple">
+                            {token.marketCap}
+                          </span>
+                          {token.marketCapChange && (
+                            <span
+                              className={`whitespace-nowrap font-semibold ${
+                                token.marketCapChange.startsWith("-")
+                                  ? "text-red-600"
+                                  : "text-green-600"
+                              }`}
+                            >
+                              {token.marketCapChange}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Separator */}
+                      <div className="h-4 w-px bg-plumPurple/20"></div>
+
+                      {/* Volume */}
+                      {token.volume24h && (
+                        <div className="flex items-center gap-1.5">
+                          <span className="whitespace-nowrap text-plumPurple/70">
+                            vol:
+                          </span>
+                          <span className="whitespace-nowrap font-semibold text-plumPurple">
+                            {token.volume24h}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Buy button - same as desktop */}
+                    <div className="flex items-center gap-1.5 rounded-lg bg-plumPurple px-3 py-1 font-mono text-xs font-semibold text-white">
+                      <span>Buy</span>
+                      <span>→</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             ))}
           </div>

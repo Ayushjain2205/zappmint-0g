@@ -47,11 +47,11 @@ export default async function AppViewPage({
     .at(-1);
 
   return (
-    <div className="min-h-screen bg-softPeach pb-24 font-body text-plumPurple">
-      {/* Token Marquee */}
-      <TokenMarquee appName={chat.title || chat.prompt} creator="0xdsc..poc" />
+    <div className="min-h-screen bg-softPeach pt-[100px] font-body text-plumPurple">
       {/* Unified Navbar with App Info */}
       <AppNavbar title={chat.title || chat.prompt} creator="0xdsc..poc" />
+      {/* Token Marquee */}
+      <TokenMarquee appName={chat.title || chat.prompt} creator="0xdsc..poc" />
       {/* App Output */}
       <div className="flex min-h-[60vh] flex-1 flex-col items-center justify-center pt-16">
         {!assistantMessage ? (

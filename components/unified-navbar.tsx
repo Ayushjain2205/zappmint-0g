@@ -16,7 +16,7 @@ interface UnifiedNavbarProps {
 export default function UnifiedNavbar({ showAppInfo }: UnifiedNavbarProps) {
   const ogAristotle = defineChain(16661);
   return (
-    <header className="absolute left-0 top-0 z-50 w-full px-6 py-1">
+    <header className="fixed left-0 top-0 z-40 w-full bg-softPeach px-6 py-1">
       <div className="flex items-center justify-between">
         {/* Left: Logo and Zappmint */}
         <div className="flex items-center">
@@ -39,27 +39,6 @@ export default function UnifiedNavbar({ showAppInfo }: UnifiedNavbarProps) {
             </div>
           </Link>
         </div>
-
-        {/* Center: App Name and Creator (only on apps page) */}
-        {showAppInfo && (
-          <div className="flex flex-1 justify-center">
-            <div className="text-center">
-              <div className="flex max-w-xs flex-wrap items-center justify-center gap-1 font-heading font-semibold text-plumPurple sm:max-w-md md:max-w-lg">
-                <span className="truncate">{showAppInfo.title}</span>
-                {showAppInfo.creator && (
-                  <>
-                    <span className="mx-1 font-normal text-bubblegumPink">
-                      by
-                    </span>
-                    <span className="truncate text-sm font-normal text-mintGreen">
-                      {showAppInfo.creator}
-                    </span>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Right: Connect Button */}
         <div className="flex items-center gap-4">
