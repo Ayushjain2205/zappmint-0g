@@ -80,6 +80,9 @@ export default function CodeViewer({
   const [viewportMode, setViewportMode] = useState<"desktop" | "mobile">(
     "desktop",
   );
+  const [coinName, setCoinName] = useState("");
+  const [coinTicker, setCoinTicker] = useState("");
+  const [coinDescription, setCoinDescription] = useState("");
 
   return (
     <>
@@ -284,6 +287,9 @@ export default function CodeViewer({
             className="inline-flex items-center gap-1 rounded border-2 border-bubblegumPink bg-lemonYellow px-3 py-1.5 font-heading text-sm font-bold text-plumPurple shadow-sm transition-colors hover:bg-bubblegumPink hover:text-lemonYellow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lemonYellow disabled:cursor-not-allowed disabled:opacity-50"
             onClick={(e) => {
               e.preventDefault();
+              setCoinName("");
+              setCoinTicker("");
+              setCoinDescription("");
               setShowCoinPopup(true);
             }}
           >
@@ -293,11 +299,29 @@ export default function CodeViewer({
       </div>
 
       {showCoinPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="relative flex w-full min-w-[350px] max-w-lg flex-col items-center rounded-xl bg-white p-0 shadow-lg">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setCoinName("");
+              setCoinTicker("");
+              setCoinDescription("");
+              setShowCoinPopup(false);
+            }
+          }}
+        >
+          <div
+            className="relative flex w-full min-w-[350px] max-w-lg flex-col items-center rounded-xl bg-white p-0 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="absolute right-2 top-2 text-bubblegumPink hover:text-lemonYellow"
-              onClick={() => setShowCoinPopup(false)}
+              onClick={() => {
+                setCoinName("");
+                setCoinTicker("");
+                setCoinDescription("");
+                setShowCoinPopup(false);
+              }}
             >
               <CloseIcon className="size-5" />
             </button>
@@ -309,16 +333,73 @@ export default function CodeViewer({
               </h2>
             </div>
             <div className="flex w-full flex-col items-center px-8 pb-8">
-              <div className="mt-6 w-full rounded-lg border-2 border-bubblegumPink bg-gray-50 p-4 font-heading text-plumPurple">
-                <p className="text-center">
-                  Coin creation is being migrated to thirdweb. Coming soon!
-                </p>
+              <div className="mt-6 w-full space-y-4">
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="coin-name"
+                    className="font-heading text-sm font-medium text-plumPurple"
+                  >
+                    Name
+                  </label>
+                  <input
+                    id="coin-name"
+                    type="text"
+                    value={coinName}
+                    onChange={(e) => setCoinName(e.target.value)}
+                    placeholder="Enter coin name"
+                    className="w-full rounded-lg border-2 border-bubblegumPink bg-white px-4 py-2.5 font-heading text-plumPurple placeholder:text-plumPurple/50 focus:outline-none focus:ring-2 focus:ring-lemonYellow"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="coin-ticker"
+                    className="font-heading text-sm font-medium text-plumPurple"
+                  >
+                    Ticker
+                  </label>
+                  <input
+                    id="coin-ticker"
+                    type="text"
+                    value={coinTicker}
+                    onChange={(e) =>
+                      setCoinTicker(e.target.value.toUpperCase())
+                    }
+                    placeholder="Enter ticker symbol (e.g., ZAPP)"
+                    maxLength={10}
+                    className="w-full rounded-lg border-2 border-bubblegumPink bg-white px-4 py-2.5 font-heading text-plumPurple placeholder:text-plumPurple/50 focus:outline-none focus:ring-2 focus:ring-lemonYellow"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="coin-description"
+                    className="font-heading text-sm font-medium text-plumPurple"
+                  >
+                    Description
+                  </label>
+                  <textarea
+                    id="coin-description"
+                    value={coinDescription}
+                    onChange={(e) => setCoinDescription(e.target.value)}
+                    placeholder="Enter coin description"
+                    rows={4}
+                    className="w-full resize-none rounded-lg border-2 border-bubblegumPink bg-white px-4 py-2.5 font-heading text-plumPurple placeholder:text-plumPurple/50 focus:outline-none focus:ring-2 focus:ring-lemonYellow"
+                  />
+                </div>
               </div>
               <button
-                className="mt-6 gap-2 rounded-xl bg-bubblegumPink px-6 py-3 font-heading font-bold text-plumPurple shadow-md transition-all hover:bg-lemonYellow"
-                onClick={() => setShowCoinPopup(false)}
+                className="mt-6 w-full gap-2 rounded-xl bg-bubblegumPink px-6 py-3 font-heading font-bold text-plumPurple shadow-md transition-all hover:bg-lemonYellow disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => {
+                  // TODO: Implement publish functionality
+                  console.log("Publish:", {
+                    coinName,
+                    coinTicker,
+                    coinDescription,
+                  });
+                  setShowCoinPopup(false);
+                }}
+                disabled={!coinName || !coinTicker || !coinDescription}
               >
-                Close
+                Publish
               </button>
             </div>
           </div>
