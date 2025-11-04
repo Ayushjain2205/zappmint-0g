@@ -62,7 +62,11 @@ export default function TokenMarquee({ appName, creator }: TokenMarqueeProps) {
           <div className="flex items-center gap-1.5 font-mono text-xs">
             {appName && (
               <>
-                <span className="font-semibold text-plumPurple">{appName}</span>
+                <span className="font-semibold text-plumPurple">
+                  {appName.length > 60
+                    ? `${appName.substring(0, 60)}...`
+                    : appName}
+                </span>
                 {creator && (
                   <>
                     <span className="text-plumPurple/60">by</span>
@@ -153,7 +157,9 @@ export default function TokenMarquee({ appName, creator }: TokenMarqueeProps) {
                     {appName && (
                       <div className="flex items-center gap-1.5 font-mono text-xs">
                         <span className="whitespace-nowrap font-semibold text-plumPurple">
-                          {appName}
+                          {appName.length > 60
+                            ? `${appName.substring(0, 60)}...`
+                            : appName}
                         </span>
                         {creator && (
                           <>
