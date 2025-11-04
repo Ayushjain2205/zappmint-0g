@@ -25,6 +25,13 @@ import { ZappCard, ZappIcons, ZappProject } from "@/components/ZappCard";
 import { client } from "@/lib/client";
 import { ConnectButton } from "thirdweb/react";
 import UnifiedNavbar from "@/components/unified-navbar";
+import { useActiveAccount } from "thirdweb/react";
+import StreaksPopup from "@/components/StreaksPopup";
+import {
+  updateStreak,
+  shouldShowStreakPopup,
+  markStreakPopupShown,
+} from "@/lib/streaks";
 
 // Add type for Chat
 interface Chat {
@@ -103,6 +110,12 @@ export default function Home() {
   const [chats, setChats] = useState<Chat[]>([]);
   const [loadingApps, setLoadingApps] = useState(true);
 
+  // Wallet connection and streaks
+  const account = useActiveAccount();
+  const [showStreakPopup, setShowStreakPopup] = useState(false);
+  const [streakDays, setStreakDays] = useState(0);
+  const [hasCheckedWallet, setHasCheckedWallet] = useState(false);
+
   useEffect(() => {
     (async () => {
       const result = await getAllChats();
@@ -119,8 +132,50 @@ export default function Home() {
     })();
   }, []);
 
+  // Handle wallet connection and streaks
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Check if wallet is connected
+    const isWalletConnected = !!account;
+    const wasWalletConnected = localStorage.getItem(
+      "zappmint_wallet_connected",
+    );
+
+    if (isWalletConnected && !hasCheckedWallet) {
+      setHasCheckedWallet(true);
+
+      // Check if this is first wallet connection (never connected before)
+      const isFirstConnection = !wasWalletConnected;
+
+      // Update streak
+      const currentStreak = updateStreak();
+      setStreakDays(currentStreak);
+
+      // Mark wallet as connected
+      localStorage.setItem("zappmint_wallet_connected", "true");
+
+      // Check if we should show popup
+      // Show on first connection OR if user has a streak and hasn't seen popup today
+      if (shouldShowStreakPopup(isFirstConnection)) {
+        setShowStreakPopup(true);
+        markStreakPopupShown();
+      }
+    } else if (!isWalletConnected) {
+      // Reset check flag when wallet disconnects
+      setHasCheckedWallet(false);
+    }
+  }, [account, hasCheckedWallet]);
+
   return (
     <div className="bg-softPeach font-body text-plumPurple">
+      {/* Streaks Popup */}
+      <StreaksPopup
+        isOpen={showStreakPopup}
+        onClose={() => setShowStreakPopup(false)}
+        streakDays={streakDays}
+      />
+
       {/* Unified Navbar */}
       <UnifiedNavbar />
 
