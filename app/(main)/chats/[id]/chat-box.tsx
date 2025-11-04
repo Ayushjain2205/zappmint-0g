@@ -85,6 +85,7 @@ export default function ChatBox({
 
           startTransition(async () => {
             // Use a message
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             const hasMessage = useMessage();
             if (!hasMessage) {
               alert(

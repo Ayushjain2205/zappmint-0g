@@ -235,7 +235,7 @@ function RewardsSection({ streakDays }: { streakDays: number }) {
             🎉 Max Tier Achieved!
           </p>
           <p className="font-display text-sm text-plumPurple/80">
-            You've unlocked all rewards. Keep your streak going!
+            You&apos;ve unlocked all rewards. Keep your streak going!
           </p>
         </div>
       )}
