@@ -101,6 +101,7 @@ export default function Home() {
 
   const [chats, setChats] = useState<Chat[]>([]);
   const [loadingApps, setLoadingApps] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Wallet connection and streaks
   const account = useActiveAccount();
@@ -515,6 +516,42 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Category Filter Buttons */}
+          <div className="mb-8 flex flex-wrap justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => setSelectedCategory(null)}
+              className={`rounded-full border-2 px-6 py-2 font-display text-sm font-semibold transition-all duration-200 ${
+                selectedCategory === null
+                  ? "border-plumPurple bg-bubblegumPink text-plumPurple shadow-md"
+                  : "border-bubblegumPink bg-white text-plumPurple hover:border-plumPurple hover:bg-bubblegumPink/20"
+              }`}
+            >
+              All
+            </button>
+            {[
+              { name: "Fun", emoji: "🎉" },
+              { name: "Social", emoji: "👥" },
+              { name: "NFT", emoji: "🖼️" },
+              { name: "Tool", emoji: "🔧" },
+              { name: "Game", emoji: "🎮" },
+            ].map((cat) => (
+              <button
+                key={cat.name}
+                type="button"
+                onClick={() => setSelectedCategory(cat.name)}
+                className={`flex items-center gap-2 rounded-full border-2 px-6 py-2 font-display text-sm font-semibold transition-all duration-200 ${
+                  selectedCategory === cat.name
+                    ? "border-plumPurple bg-bubblegumPink text-plumPurple shadow-md"
+                    : "border-bubblegumPink bg-white text-plumPurple hover:border-plumPurple hover:bg-bubblegumPink/20"
+                }`}
+              >
+                <span className="text-base">{cat.emoji}</span>
+                {cat.name}
+              </button>
+            ))}
+          </div>
+
           {loadingApps ? (
             <div className="flex items-center justify-center py-8">
               <Spinner />
@@ -526,82 +563,64 @@ export default function Home() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {chats.slice(0, 8).map((chat, idx) => {
-                // Simple mapping for category/icon/gradient
-                const categories = [
-                  {
-                    category: "Finance",
-                    icon: (
-                      <ZappIcons.Wallet className="h-4 w-4 text-lemonYellow" />
-                    ),
-                    gradient: "from-lemonYellow to-tangerinePop",
-                  },
-                  {
-                    category: "NFT",
-                    icon: (
-                      <ZappIcons.ImageIcon className="h-4 w-4 text-bubblegumPink" />
-                    ),
-                    gradient: "from-bubblegumPink to-plumPurple",
-                  },
-                  {
-                    category: "Analytics",
-                    icon: (
-                      <ZappIcons.BarChart3 className="h-4 w-4 text-skyBlue" />
-                    ),
-                    gradient: "from-skyBlue to-mintGreen",
-                  },
-                  {
-                    category: "DeFi",
-                    icon: <ZappIcons.Zap className="h-4 w-4 text-mintGreen" />,
-                    gradient: "from-mintGreen to-lemonYellow",
-                  },
-                  {
-                    category: "Social",
-                    icon: (
-                      <ZappIcons.Users className="h-4 w-4 text-plumPurple" />
-                    ),
-                    gradient: "from-plumPurple to-bubblegumPink",
-                  },
-                  {
-                    category: "Metaverse",
-                    icon: (
-                      <ZappIcons.Boxes className="h-4 w-4 text-tangerinePop" />
-                    ),
-                    gradient: "from-tangerinePop to-bubblegumPink",
-                  },
-                  {
-                    category: "Governance",
-                    icon: (
-                      <ZappIcons.Layout className="h-4 w-4 text-lemonYellow" />
-                    ),
-                    gradient: "from-lemonYellow to-tangerinePop",
-                  },
-                  {
-                    category: "Explorer",
-                    icon: (
-                      <ZappIcons.Globe className="h-4 w-4 text-mintGreen" />
-                    ),
-                    gradient: "from-mintGreen to-skyBlue",
-                  },
-                ];
-                const cat = categories[idx % categories.length];
-                return (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+              {chats
+                .map((chat, idx) => {
+                  // Categories mapping
+                  const categories = [
+                    {
+                      category: "Fun",
+                      emoji: "🎉",
+                      gradient: "from-lemonYellow to-tangerinePop",
+                    },
+                    {
+                      category: "Social",
+                      emoji: "👥",
+                      gradient: "from-plumPurple to-bubblegumPink",
+                    },
+                    {
+                      category: "NFT",
+                      emoji: "🖼️",
+                      gradient: "from-bubblegumPink to-plumPurple",
+                    },
+                    {
+                      category: "Tool",
+                      emoji: "🔧",
+                      gradient: "from-mintGreen to-skyBlue",
+                    },
+                    {
+                      category: "Game",
+                      emoji: "🎮",
+                      gradient: "from-tangerinePop to-bubblegumPink",
+                    },
+                  ];
+                  const cat = categories[idx % categories.length];
+                  return {
+                    ...chat,
+                    category: cat.category,
+                    emoji: cat.emoji,
+                    gradient: cat.gradient,
+                  };
+                })
+                .filter(
+                  (chat) =>
+                    !selectedCategory || chat.category === selectedCategory,
+                )
+                .slice(0, 8)
+                .map((chat) => (
                   <ZappCard
                     key={chat.id}
                     project={{
                       id: chat.id,
                       title: chat.title || chat.prompt.slice(0, 32),
                       creator: "0x0000000000000000000000000000000000000000", // Placeholder
-                      category: cat.category,
-                      icon: cat.icon,
-                      gradient: cat.gradient,
+                      category: chat.category,
+                      emoji: chat.emoji,
+                      gradient: chat.gradient,
                       description: chat.prompt.slice(0, 100),
-                      createdAt: chat.createdAt,
                     }}
                   />
-                );
-              })}
+                ))}
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { FaUser, FaCalendarAlt } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { PiCoinVerticalFill } from "react-icons/pi";
 
 // Icon SVGs
@@ -316,13 +316,74 @@ const Globe = (props: React.SVGProps<SVGSVGElement>) => (
     <ellipse cx="12" cy="12" rx="10" ry="4" stroke="#fff" strokeWidth="1.5" />
   </svg>
 );
+const Fun = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <circle cx="12" cy="12" r="10" fill="#fff" fillOpacity=".1" />
+    <circle cx="12" cy="12" r="10" stroke="#fff" strokeWidth="1.5" />
+    <circle cx="8" cy="9" r="1.5" fill="#fff" fillOpacity=".3" />
+    <circle cx="16" cy="9" r="1.5" fill="#fff" fillOpacity=".3" />
+    <path
+      d="M8 14c1.5 2 4.5 2 6 0"
+      stroke="#fff"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+const Tool = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path
+      d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+      fill="#fff"
+      fillOpacity=".1"
+    />
+    <path
+      d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+      stroke="#fff"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+const Game = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <rect
+      x="2"
+      y="6"
+      width="20"
+      height="12"
+      rx="2"
+      fill="#fff"
+      fillOpacity=".1"
+    />
+    <rect
+      x="2"
+      y="6"
+      width="20"
+      height="12"
+      rx="2"
+      stroke="#fff"
+      strokeWidth="1.5"
+    />
+    <circle cx="8" cy="12" r="1" fill="#fff" fillOpacity=".3" />
+    <circle cx="16" cy="12" r="1" fill="#fff" fillOpacity=".3" />
+    <path
+      d="M12 10v4M10 12h4"
+      stroke="#fff"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+    />
+  </svg>
+);
 
 export type ZappProject = {
   id: number | string;
   title: string;
   creator: string;
   category: string;
-  icon: React.ReactNode;
+  emoji?: string;
+  icon?: React.ReactNode; // Keep for backward compatibility
   gradient: string;
   description?: string;
   tokenPrice?: string;
@@ -337,21 +398,25 @@ const truncateAddress = (address: string) => {
   return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 };
 
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "2-digit",
-  });
-}
+// Category to emoji mapping
+const getCategoryEmoji = (category: string): string => {
+  const emojiMap: Record<string, string> = {
+    Fun: "🎉",
+    Social: "👥",
+    NFT: "🖼️",
+    Tool: "🔧",
+    Game: "🎮",
+  };
+  return emojiMap[category] || "📱";
+};
 
 export function ZappCard({ project }: ZappCardProps) {
   const router = useRouter();
   // Placeholder values for description and price
   const description = project.description || "No description available.";
   const tokenPrice = project.tokenPrice || "0.002";
-  const createdAt = (project as any).createdAt || "";
+  const emoji = project.emoji || getCategoryEmoji(project.category);
+
   return (
     <div
       className="group cursor-pointer"
@@ -365,45 +430,36 @@ export function ZappCard({ project }: ZappCardProps) {
     >
       <div
         className={
-          "relative flex h-[200px] flex-col justify-between overflow-hidden rounded-xl border border-bubblegumPink bg-white p-4 text-plumPurple shadow-sm transition-all duration-300 hover:scale-[1.025] hover:shadow-md"
+          "relative flex min-h-[180px] flex-col justify-between overflow-hidden rounded-xl border border-bubblegumPink bg-white p-3 text-plumPurple shadow-sm transition-all duration-300 hover:scale-[1.025] hover:shadow-md sm:min-h-[200px] sm:p-4"
         }
       >
-        {/* Category with Icon */}
+        {/* Category with Emoji */}
         <div className="mb-2 flex items-center gap-2">
-          <div className="rounded-full bg-bubblegumPink/10 p-1">
-            {project.icon}
-          </div>
-          <span className="font-display text-xs font-semibold text-bubblegumPink">
+          <span className="text-base sm:text-lg">{emoji}</span>
+          <span className="font-display text-xs font-semibold text-bubblegumPink sm:text-sm">
             {project.category}
           </span>
         </div>
         {/* Project Name */}
-        <h3 className="mb-1 truncate font-heading text-xl font-bold">
+        <h3 className="mb-1 truncate font-heading text-lg font-bold sm:text-xl">
           {project.title}
         </h3>
         {/* Description */}
-        <p className="mb-2 line-clamp-2 font-body text-sm text-plumPurple/80">
+        <p className="mb-2 line-clamp-2 font-body text-xs text-plumPurple/80 sm:text-sm">
           {description}
         </p>
         {/* Pills Row */}
-        <div className="mt-auto flex flex-wrap gap-2 pt-2">
+        <div className="mt-auto flex flex-wrap gap-1.5 pt-2 sm:gap-2">
           {/* Token Price Pill */}
-          <span className="flex items-center gap-1 rounded-full bg-mintGreen/20 px-3 py-1 text-xs font-bold text-mintGreen">
-            <PiCoinVerticalFill className="text-base text-mintGreen" /> Ξ{" "}
-            {tokenPrice}
+          <span className="flex items-center gap-1 rounded-full bg-mintGreen/20 px-2 py-1 text-[10px] font-bold text-mintGreen sm:px-3 sm:text-xs">
+            <PiCoinVerticalFill className="text-sm text-mintGreen sm:text-base" />{" "}
+            Ξ {tokenPrice}
           </span>
           {/* Creator Pill */}
-          <span className="flex items-center gap-1 rounded-full bg-bubblegumPink/20 px-3 py-1 text-xs font-bold text-plumPurple">
-            <FaUser className="text-sm text-bubblegumPink" />{" "}
+          <span className="flex items-center gap-1 rounded-full bg-bubblegumPink/20 px-2 py-1 text-[10px] font-bold text-plumPurple sm:px-3 sm:text-xs">
+            <FaUser className="text-xs text-bubblegumPink sm:text-sm" />{" "}
             {truncateAddress(project.creator)}
           </span>
-          {/* Date Pill */}
-          {createdAt && (
-            <span className="flex items-center gap-1 rounded-full bg-lemonYellow/30 px-3 py-1 text-xs font-bold text-plumPurple">
-              <FaCalendarAlt className="text-sm text-lemonYellow" />{" "}
-              {formatDate(createdAt)}
-            </span>
-          )}
         </div>
       </div>
     </div>
@@ -420,4 +476,7 @@ export const ZappIcons = {
   Boxes,
   Layout,
   Globe,
+  Fun,
+  Tool,
+  Game,
 };
