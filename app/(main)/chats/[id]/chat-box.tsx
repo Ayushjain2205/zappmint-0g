@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { createMessage } from "../../actions";
 import { type Chat } from "./page";
 import LightningBoltIcon from "@/components/icons/lightning-bolt";
+import { useMessage, getMessagesAvailable } from "@/lib/messages";
 
 export default function ChatBox({
   chat,
@@ -20,10 +21,25 @@ export default function ChatBox({
 }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const disabled = isPending || isStreaming;
   const didFocusOnce = useRef(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [prompt, setPrompt] = useState("");
+  const [messagesAvailable, setMessagesAvailable] = useState(() =>
+    getMessagesAvailable(),
+  );
+  const disabled = isPending || isStreaming || messagesAvailable <= 0;
+
+  // Listen for message count updates
+  useEffect(() => {
+    const handleMessagesUpdated = () => {
+      setMessagesAvailable(getMessagesAvailable());
+    };
+    window.addEventListener("messagesUpdated", handleMessagesUpdated);
+
+    return () => {
+      window.removeEventListener("messagesUpdated", handleMessagesUpdated);
+    };
+  }, []);
   const textareaResizePrompt = prompt
     .split("\n")
     .map((text) => (text === "" ? "a" : text))
@@ -41,11 +57,42 @@ export default function ChatBox({
   }, [disabled]);
 
   return (
-    <div className="mx-auto mb-5 flex w-full max-w-prose shrink-0 px-8 font-display">
+    <div className="mx-auto mb-5 flex w-full max-w-prose shrink-0 flex-col gap-2 px-8 font-display">
+      {messagesAvailable <= 0 && (
+        <div className="rounded-lg border-2 border-bubblegumPink bg-bubblegumPink/20 px-4 py-2 text-center">
+          <p className="font-body text-sm font-semibold text-plumPurple">
+            You have no messages available. Please purchase more to continue.
+          </p>
+        </div>
+      )}
+      {messagesAvailable > 0 && messagesAvailable <= 3 && (
+        <div className="rounded-lg border-2 border-lemonYellow bg-lemonYellow/20 px-4 py-2 text-center">
+          <p className="font-body text-sm font-semibold text-plumPurple">
+            Low messages: {messagesAvailable} remaining
+          </p>
+        </div>
+      )}
       <form
         className="relative flex w-full"
         action={async () => {
+          // Check if user has messages available
+          if (messagesAvailable <= 0) {
+            alert(
+              "You have no messages available. Please purchase more messages.",
+            );
+            return;
+          }
+
           startTransition(async () => {
+            // Use a message
+            const hasMessage = useMessage();
+            if (!hasMessage) {
+              alert(
+                "You have no messages available. Please purchase more messages.",
+              );
+              return;
+            }
+
             const message = await createMessage(chat.id, prompt, "user");
             const streamPromise = fetch(
               "/api/get-next-completion-stream-promise",
@@ -67,6 +114,9 @@ export default function ChatBox({
             startTransition(() => {
               router.refresh();
               setPrompt("");
+              // Update local state and trigger event for other components
+              setMessagesAvailable(getMessagesAvailable());
+              window.dispatchEvent(new Event("messagesUpdated"));
             });
           });
         }}

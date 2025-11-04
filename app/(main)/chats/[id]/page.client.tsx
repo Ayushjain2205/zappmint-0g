@@ -12,6 +12,10 @@ import CodeViewer from "./code-viewer";
 import CodeViewerLayout from "./code-viewer-layout";
 import type { Chat } from "./page";
 import { Context } from "../../providers";
+import BuyMessagesPopup from "@/components/BuyMessagesPopup";
+import { getMessagesAvailable, addMessages } from "@/lib/messages";
+import { useActiveAccount } from "thirdweb/react";
+import { MessageSquare } from "lucide-react";
 
 export default function PageClient({ chat }: { chat: Chat }) {
   const context = use(Context);
@@ -28,6 +32,24 @@ export default function PageClient({ chat }: { chat: Chat }) {
   const [activeMessage, setActiveMessage] = useState(
     chat.messages.filter((m) => m.role === "assistant").at(-1),
   );
+  const [messagesAvailable, setMessagesAvailableState] = useState(0);
+  const [showBuyMessagesPopup, setShowBuyMessagesPopup] = useState(false);
+  const account = useActiveAccount();
+
+  // Initialize and sync messages available count
+  useEffect(() => {
+    setMessagesAvailableState(getMessagesAvailable());
+
+    // Listen for message count updates
+    const handleMessagesUpdated = () => {
+      setMessagesAvailableState(getMessagesAvailable());
+    };
+    window.addEventListener("messagesUpdated", handleMessagesUpdated);
+
+    return () => {
+      window.removeEventListener("messagesUpdated", handleMessagesUpdated);
+    };
+  }, []);
 
   useEffect(() => {
     async function f() {
@@ -88,15 +110,62 @@ export default function PageClient({ chat }: { chat: Chat }) {
     f();
   }, [chat.id, router, streamPromise, context]);
 
+  const handlePurchaseMessages = async (messages: number, price: number) => {
+    if (!account) {
+      alert("Please connect your wallet to purchase messages");
+      return;
+    }
+
+    try {
+      // Call API to purchase messages
+      const response = await fetch("/api/buy-messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages,
+          price,
+          walletAddress: account.address,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to purchase messages");
+      }
+
+      const data = await response.json();
+
+      // Update local storage and state
+      addMessages(messages);
+      const newCount = getMessagesAvailable();
+      setMessagesAvailableState(newCount);
+
+      // Show success message
+      alert(`Successfully purchased ${messages} messages!`);
+    } catch (error) {
+      console.error("Error purchasing messages:", error);
+      throw error;
+    }
+  };
+
   return (
     <div className="h-dvh">
       <UnifiedNavbar />
       <div className="flex h-full pt-[44px]">
         <div className="mx-auto flex w-full shrink-0 flex-col overflow-hidden lg:w-1/2">
-          <div className="flex items-center gap-4 px-4 py-4">
+          <div className="flex items-center justify-between gap-4 px-4 py-4">
             <p className="font-heading font-semibold text-plumPurple">
               {chat.title}
             </p>
+            <button
+              onClick={() => setShowBuyMessagesPopup(true)}
+              className="flex touch-manipulation items-center gap-2 rounded-lg border-2 border-bubblegumPink bg-white px-3 py-1.5 font-heading text-sm font-semibold text-plumPurple transition-colors hover:bg-bubblegumPink/20"
+            >
+              <MessageSquare className="h-4 w-4" />
+              <span>{messagesAvailable}</span>
+            </button>
           </div>
 
           <ChatLog
@@ -173,6 +242,12 @@ export default function PageClient({ chat }: { chat: Chat }) {
           )}
         </CodeViewerLayout>
       </div>
+
+      <BuyMessagesPopup
+        isOpen={showBuyMessagesPopup}
+        onClose={() => setShowBuyMessagesPopup(false)}
+        onPurchase={handlePurchaseMessages}
+      />
     </div>
   );
 }
