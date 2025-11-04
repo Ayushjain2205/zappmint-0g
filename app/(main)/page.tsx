@@ -1,18 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Fieldset from "@/components/fieldset";
-import ArrowRightIcon from "@/components/icons/arrow-right";
 import LightningBoltIcon from "@/components/icons/lightning-bolt";
 import LightbulbIcon from "@/components/icons/lightbulb";
-import LoadingButton from "@/components/loading-button";
 import Spinner from "@/components/spinner";
-import bgImg from "@/public/halo.png";
 import * as Select from "@radix-ui/react-select";
 import assert from "assert";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { use, useState, useRef, useTransition, useEffect } from "react";
 import { createChat, getAllChats } from "./actions";
@@ -22,8 +16,6 @@ import UploadIcon from "@/components/icons/upload-icon";
 import { XCircleIcon } from "@heroicons/react/20/solid";
 import { MODELS, SUGGESTED_PROMPTS } from "@/lib/constants";
 import { ZappCard, ZappIcons, ZappProject } from "@/components/ZappCard";
-import { client } from "@/lib/client";
-import { ConnectButton } from "thirdweb/react";
 import UnifiedNavbar from "@/components/unified-navbar";
 import { useActiveAccount } from "thirdweb/react";
 import StreaksPopup from "@/components/StreaksPopup";
@@ -197,41 +189,6 @@ export default function Home() {
           style={{ minHeight: 500 }}
         />
         <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-bubblegumPink/20 via-lemonYellow/10 to-transparent" />
-        {/* Digital code rain effect */}
-        <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-          <div className="code-rain">
-            {[...Array(15)].map((_, i) => (
-              <div
-                key={i}
-                className="code-column"
-                style={{
-                  left: `${(i / 15) * 100}%`,
-                  animationDuration: `${Math.random() * 10 + 15}s`,
-                  animationDelay: `${Math.random() * 5}s`,
-                }}
-              >
-                {[...Array(20)].map((_, j) => (
-                  <div
-                    key={j}
-                    className="code-character font-mono"
-                    style={{
-                      animationDuration: `${Math.random() * 2 + 1}s`,
-                      animationDelay: `${Math.random() * 2}s`,
-                      color:
-                        j % 5 === 0
-                          ? "#FFEB78" // lemonYellow
-                          : j % 7 === 0
-                            ? "#F78DA7" // bubblegumPink
-                            : "#90D8F6", // skyBlue
-                    }}
-                  >
-                    {String.fromCharCode(Math.floor(Math.random() * 74) + 48)}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
 
         <div className="container relative z-20 mx-auto max-w-4xl text-center">
           {/* Hero Heading with Coin */}
