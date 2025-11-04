@@ -333,13 +333,19 @@ export default function CodeViewer({
               </h2>
             </div>
             <div className="flex w-full flex-col items-center px-8 pb-8">
+              <div className="mt-4 w-full rounded-lg border-2 border-bubblegumPink bg-bubblegumPink/10 p-4">
+                <p className="text-center font-heading text-sm text-plumPurple">
+                  50% of coins will go to you (app creator) and 50% will go to
+                  the open market
+                </p>
+              </div>
               <div className="mt-6 w-full space-y-4">
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="coin-name"
                     className="font-heading text-sm font-medium text-plumPurple"
                   >
-                    Name
+                    Appcoin name
                   </label>
                   <input
                     id="coin-name"
@@ -357,17 +363,22 @@ export default function CodeViewer({
                   >
                     Ticker
                   </label>
-                  <input
-                    id="coin-ticker"
-                    type="text"
-                    value={coinTicker}
-                    onChange={(e) =>
-                      setCoinTicker(e.target.value.toUpperCase())
-                    }
-                    placeholder="Enter ticker symbol (e.g., ZAPP)"
-                    maxLength={10}
-                    className="w-full rounded-lg border-2 border-bubblegumPink bg-white px-4 py-2.5 font-heading text-plumPurple placeholder:text-plumPurple/50 focus:outline-none focus:ring-2 focus:ring-lemonYellow"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-heading text-plumPurple">
+                      $
+                    </span>
+                    <input
+                      id="coin-ticker"
+                      type="text"
+                      value={coinTicker}
+                      onChange={(e) =>
+                        setCoinTicker(e.target.value.toUpperCase())
+                      }
+                      placeholder="ZAPP"
+                      maxLength={10}
+                      className="w-full rounded-lg border-2 border-bubblegumPink bg-white py-2.5 pl-7 pr-4 font-heading text-plumPurple placeholder:text-plumPurple/50 focus:outline-none focus:ring-2 focus:ring-lemonYellow"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label
